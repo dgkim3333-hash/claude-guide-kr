@@ -11,6 +11,7 @@ MCP를 붙이려면 Node.js와 uv가 먼저 깔려 있어야 합니다. 이 둘�
 |---|---|
 | ★ [중요_claude_desktop_config_기본.json](중요_claude_desktop_config_기본.json) | 붙여넣기만 하면 바로 연결되는 MCP 8개. 여기부터 시작하세요 |
 | [사전준비_설치.md](사전준비_설치.md) | Node.js·uv 설치와 안 될 때 대처법 |
+| [실습_경매분석스킬_통합본.md](실습_경매분석스킬_통합본.md) | 복사해서 붙여넣으면 경매분석 스킬이 바로 만들어집니다 |
 | [claude_desktop_config_실습용.jsonc](claude_desktop_config_실습용.jsonc) | MCP 설정 파일 템플릿. 넣는 위치와 API 키 발급처 포함  |
 
 ## 어디에 무엇을 넣나
