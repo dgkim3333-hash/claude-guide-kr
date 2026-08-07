@@ -1,0 +1,46 @@
+{
+  "mcpServers": {
+    "youtube": {
+      "command": "npx",
+      "args": ["-y", "@kevinwatt/yt-dlp-mcp@latest"]
+    },
+    "youtube-transcript": {
+      "command": "npx",
+      "args": ["-y", "@kimtaeyoon83/mcp-server-youtube-transcript"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    },
+    "pandoc": {
+      "command": "uvx",
+      "args": ["mcp-pandoc"]
+    },
+    "hwp-read": {
+      "command": "uvx",
+      "args": ["--with", "mcp<2", "--from", "hwp-mcp", "hwp-mcp"],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1"
+      }
+    },
+    "word": {
+      "command": "uvx",
+      "args": ["--from", "word-mcp-live", "word_mcp_server.exe"],
+      "env": {
+        "MCP_AUTHOR": "Claude",
+        "MCP_AUTHOR_INITIALS": "C",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1"
+      }
+    }
+  }
+}
