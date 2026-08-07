@@ -14,6 +14,42 @@ MCP를 붙이려면 Node.js와 uv가 먼저 깔려 있어야 합니다. 이 둘�
 | [실습_경매분석스킬_통합본.md](실습_경매분석스킬_통합본.md) | 복사해서 붙여넣으면 경매분석 스킬이 바로 만들어집니다 |
 | [claude_desktop_config_실습용.jsonc](claude_desktop_config_실습용.jsonc) | MCP 설정 파일 템플릿. 넣는 위치와 API 키 발급처 포함  |
 
+## 스킬 — Claude 에게 일하는 방법을 가르치기
+
+스킬은 Claude 에게 주는 업무 매뉴얼입니다. 설치해 두면 그 일이 생길 때마다
+따로 부르지 않아도 알아서 꺼내 씁니다.
+
+### 한 번에 설치 (권장)
+
+| 파일 | 내용 |
+|---|---|
+| [claude-guide-kr.plugin](claude-guide-kr.plugin) | 스킬 8개를 한 번에. 채팅창에 끌어다 놓고 저장 |
+
+들어 있는 스킬
+
+| 스킬 | 언제 작동하나 |
+|---|---|
+| mcp-health-check | MCP 가 안 붙을 때 진단 |
+| number-format-guard | 금액 쓸 때 원 단위 콤마 강제 |
+| artifact-safe-update | Cowork 대시보드 안전 갱신 |
+| residential-auction | 아파트·다가구·다세대 경매 물건 분석 |
+| property-location-scan | 주소로 입지·상권·규제 조사 |
+| onbid-api-caller | 온비드 공매 조회 규칙 |
+| real-estate-tax-calculator | 취득세·양도세 산정 |
+| stock-first-check | 종목 퇴출위험·재무·희석·수급 점검 |
+
+### 하나씩 설치하고 싶다면
+
+| 파일 | 내용 |
+|---|---|
+| [stock-first-check.skill](stock-first-check.skill) | 주식 종목 1차 점검 |
+| [mcp-health-check.skill](mcp-health-check.skill) | MCP 자가진단 |
+
+설치는 파일을 **채팅창에 끌어다 놓고 저장 버튼**을 누르면 됩니다. 새 대화부터 적용됩니다.
+
+> 스킬은 Claude 에게 새로운 행동을 지시하는 것입니다. 신뢰할 수 있는 출처의 것만 설치하세요.
+> > 부동산·주식 스킬은 자료를 정리하고 위험을 드러낼 뿐, 투자를 권유하지 않습니다.
+
 ## 어디에 무엇을 넣나
 
 Claude는 지침을 넣는 자리가 여러 곳이고, **자리마다 적용 범위가 다릅니다.**
