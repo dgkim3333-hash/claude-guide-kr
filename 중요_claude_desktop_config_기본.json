@@ -37,6 +37,59 @@
         "PYTHONIOENCODING": "utf-8",
         "PYTHONUTF8": "1"
       }
+    },
+    "korean-law": {
+      "command": "npx",
+      "args": ["-y", "korean-law-mcp"],
+      "env": {
+        "LAW_OC": "<<여기에_법령센터_OC_입력>>"
+      }
+    },
+    "real-estate": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "C:\\mcp\\real-estate-mcp",
+        "python",
+        "src/real_estate/mcp_server/server.py"
+      ],
+      "env": {
+        "DATA_GO_KR_SERVICE_KEY": "<<여기에_공공데이터포털_API_키_입력>>",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1"
+      }
+    },
+    "datagokr": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\mcp\\datagokr-mcp",
+        "run",
+        "python",
+        "server.py"
+      ],
+      "env": {
+        "DATA_GO_KR_SERVICE_KEY": "<<여기에_공공데이터포털_API_키_입력>>",
+        "EPOST_SERVICE_KEY": "<<여기에_공공데이터포털_API_키_입력>>",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1"
+      }
+    },
+    "vworld-landuse": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "C:\\mcp\\vworld-landuse-mcp",
+        "python",
+        "vworld_landuse_mcp.py"
+      ],
+      "env": {
+        "VWORLD_API_KEY": "<<여기에_브이월드_인증키_입력>>",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1"
+      }
     }
   }
 }
