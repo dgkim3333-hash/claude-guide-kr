@@ -2,12 +2,12 @@
 {
   "name": "Theme Radar Edu",
   "schemaVersion": 1,
-  "description": "한국 주식 테마 레이더 — 거래대금 실측(KIS) 기반으로 직접 정의한 Hot 8 + 신규 12 테마를 성숙도×모멘텀 2×2 지도로 보여주고, 테마 카드마다 대표 ETF·대표 관련주의 최근 1개월 가격 추이를 정규화 차트로 그린다. 시세·순위는 koreaStock MCP(KIS 공식), 뉴스는 같은 koreaStock MCP의 종목뉴스로 불러오는 라이브 대시보드. Claude 데스크탑 교육 실습용 사본.",
+  "description": "한국 주식 테마 레이더 — 거래대금 실측(KIS) 기반으로 직접 정의한 Hot 8 + 신규 12 테마를 성숙도×모멘텀 2×2 지도로 보여주고, 테마 카드마다 대표 ETF·대표 관련주의 최근 1개월 가격 추이를 정규화 차트로 그린다. 시세·순위는 koreaStock MCP(KIS 공식), 뉴스는 NaverSearch MCP의 뉴스 검색으로 불러오는 라이브 대시보드. 두 도구 모두 PlayMCP 게이트웨이 하나로 붙는다. Claude 데스크탑 교육 실습용 사본.",
   "mcpTools": [
     "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__koreaStock-market_get_movers",
     "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__koreaStock-stock_get_price_history",
     "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__koreaStock-stock_get_quote",
-    "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__koreaStock-market_get_news"
+    "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__NaverSearch-search_news"
   ],
   "mcpServerNames": [
     "PlayMCP",
@@ -125,7 +125,7 @@
 <body>
 <div class="wrap">
   <h1>🇰🇷 한국 테마 레이더</h1>
-  <div class="sub">거래대금 실측(KIS 국내주식 순위) 기반으로 직접 정의한 테마를 추적 · <b>테마 카드마다 대표 ETF·대표주의 최근 1개월 가격 추이</b>를 시작일=0% 기준으로 정규화해 표시 · 뉴스는 KIS 종목뉴스(제목만·링크 없음) · 금액은 원 단위 풀 표기</div>
+  <div class="sub">거래대금 실측(KIS 국내주식 순위) 기반으로 직접 정의한 테마를 추적 · <b>테마 카드마다 대표 ETF·대표주의 최근 1개월 가격 추이</b>를 시작일=0% 기준으로 정규화해 표시 · 뉴스는 네이버 뉴스 검색(제목 클릭 시 원문) · 금액은 원 단위 풀 표기</div>
 
   <div class="toolbar">
     <button class="pri-btn" id="refreshAll">📰 전체 테마 오늘 뉴스 불러오기</button>
@@ -196,7 +196,8 @@
 
 <script>
 // ===== 커넥터 설정 (다른 계정에서 쓸 때 이 값만 본인 것으로 교체) =====
-// 이 화면은 커넥터 하나(koreaStock)만 씁니다. 시세·순위·뉴스가 모두 여기서 나옵니다.
+// 이 화면은 PlayMCP 커넥터 하나로 돕니다. 도구함에 「한국 주식 정보」(시세·순위)와
+// 「네이버 검색 mcp」(뉴스) 두 개를 담아야 합니다. 서버 ID는 둘 다 같습니다.
 const KR_SERVER = 'b68f9e48-afcd-44fc-b9e2-15b50d00b660'; // koreaStock(KIS) 커넥터 서버 ID
 // =====================================================================
 /* THEMES_START (이 블록은 매일 자동 갱신됨 — 마커 사이를 통째로 교체) */
@@ -729,25 +730,25 @@ try {
 function pdate(s){ try{ const d=new Date(s); if(isNaN(d)) return ''; return ('0'+(d.getMonth()+1)).slice(-2)+'.'+('0'+d.getDate()).slice(-2); }catch(e){ return ''; } }
 function kdate(s){ if(!s||String(s).length!==8) return ''; s=String(s); return s.slice(4,6)+'.'+s.slice(6,8); }
 async function searchNews(query, n){
-  const r = await window.cowork.callMcpTool('mcp__' + KR_SERVER + '__koreaStock-market_get_news', { stock_code: query, limit:(n||8) });
+  const r = await window.cowork.callMcpTool('mcp__' + KR_SERVER + '__NaverSearch-search_news', { query: query, display:(n||8), sort:'date' });
   if (r && r.isError) return [];
   let p = r.structuredContent;
   if (!p && r.content && r.content[0] && r.content[0].text){ try { p = JSON.parse(r.content[0].text); } catch(e){ return []; } }
-  return (p && p.data && p.data.items) ? p.data.items : [];
+  return (p && p.items) ? p.items : [];
 }
 async function fetchNews(t){
   const el = document.getElementById('news-'+t.id);
   if(!el) return;
   el.innerHTML = '<span class="muted">불러오는 중…</span>';
   try {
-    const code = (t.stocks && t.stocks[0]) ? t.stocks[0].tk : null;
-    if(!code){ el.innerHTML = '<span class="muted">대표 종목이 없어 뉴스를 찾을 수 없습니다</span>'; return; }
-    const items = await searchNews(code, 8);
+    const q = t.query || t.name;
+    if(!q){ el.innerHTML = '<span class="muted">검색어가 없어 뉴스를 찾을 수 없습니다</span>'; return; }
+    const items = await searchNews(q, 10);
     if (!items.length){ el.innerHTML = '<span class="muted">검색 결과 없음</span>'; return; }
     const seen = {};
-    const uniq = items.filter(n => { const k=(n.title||'').toLowerCase(); if(!k||seen[k]) return false; seen[k]=1; return true; });
+    const uniq = items.filter(n => { const k=stripB(n.title||'').toLowerCase(); if(!k||seen[k]) return false; seen[k]=1; return true; });
     const html = uniq.slice(0,6).map(n =>
-      `<a>${stripB(n.title)}<span class="date">· ${kdate(n.date)}</span></a>`
+      `<a href="${n.link||n.originallink||'#'}" target="_blank" rel="noopener">${stripB(n.title)}<span class="date">· ${pdate(n.pubDate)}</span></a>`
     ).join('');
     el.innerHTML = html;
     saveCache(t.id, html);
