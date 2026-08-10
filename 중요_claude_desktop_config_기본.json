@@ -20,10 +20,6 @@
       "command": "npx",
       "args": ["-y", "@playwright/mcp@latest"]
     },
-    "pandoc": {
-      "command": "uvx",
-      "args": ["mcp-pandoc"]
-    },
     "hwp-read": {
       "command": "uvx",
       "args": ["--with", "mcp<2", "--from", "hwp-mcp", "hwp-mcp"],
