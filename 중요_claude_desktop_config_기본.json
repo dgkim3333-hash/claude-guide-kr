@@ -21,12 +21,8 @@
       "args": ["-y", "@playwright/mcp@latest"]
     },
     "hwp-read": {
-      "command": "uvx",
-      "args": ["--with", "mcp<2", "--from", "hwp-mcp", "hwp-mcp"],
-      "env": {
-        "PYTHONIOENCODING": "utf-8",
-        "PYTHONUTF8": "1"
-      }
+      "command": "npx",
+      "args": ["-y", "hwp-mcp@latest"]
     },
     "word": {
       "command": "uvx",
