@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Tenbagger Watch",
+  "schemaVersion": 1,
+  "description": "텐베거 4축 통과 7종목 라이브 관제판. 열 때마다 KIS 시세·60영업일 주가이력·외국인/기관 30영업일 수급·KIS 종목뉴스·네이버 종목뉴스·네이버 테마뉴스를 다시 불러온다. 티커 클릭 시 네이버 금융으로 이동. WATCHLIST와 CHANGELOG 데이터 블록이 마커로 분리되어 있어 주간 재실행 프로젝트가 종목 편입·제외 시 update_artifact로 교체한다. 탭: 종목 현황 / 종목별 상세 / 뉴스 / 변경 이력 / 편입 근거.",
+  "mcpTools": [
+    "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__koreaStock-stock_get_quote",
+    "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__koreaStock-stock_get_price_history",
+    "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__koreaStock-market_get_news",
+    "mcp__kis__call-kis-api",
+    "mcp__naver-search__search_news"
+  ],
+  "mcpServerNames": [
+    "PlayMCP",
+    "PlayMCP",
+    "PlayMCP",
+    "kis",
+    "naver-search"
+  ]
+}
+</script>
+<html lang="ko"><head><meta charset="utf-8"><title>텐베거 관제</title>
+<style>
+:root{color-scheme:light;--bg:#fff;--panel:#f7f8fa;--line:#e3e6ec;--line2:#eef0f4;
+--ink:#141821;--ink2:#5a6270;--ink3:#8b93a1;--a:#1f5eff;--a-bg:#eef3ff;
+--up:#c0392b;--dn:#1f5eff;--g:#0b8a4b;--g-bg:#e6f6ee;--y:#b4820a;--y-bg:#fdf5e0;--r:#c0392b;--r-bg:#fdeeec;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.6;
+font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:16px 18px 70px}
+h1{font-size:19px;margin:0 0 2px;letter-spacing:-.02em}
+.sub{color:var(--ink2);font-size:12px;margin-bottom:12px}
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;
+ background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+button{font:inherit;padding:7px 14px;border-radius:6px;border:1px solid var(--a);background:var(--a);color:#fff;cursor:pointer;font-weight:600}
+button.ghost{background:#fff;color:var(--a)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.prog{flex:1;min-width:180px}
+.pbar{height:5px;background:var(--line2);border-radius:4px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--a);width:0;transition:width .25s}
+.pmsg{font-size:11.5px;color:var(--ink2);margin-top:3px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:14px;flex-wrap:wrap}
+.tab{padding:8px 13px;cursor:pointer;color:var(--ink2);border-bottom:2px solid transparent;user-select:none}
+.tab.on{color:var(--a);border-bottom-color:var(--a);font-weight:600}
+.page{display:none}.page.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px;margin-bottom:13px}
+.card h2{font-size:13px;margin:0 0 9px}
+.num{font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line2);text-align:right;white-space:nowrap}
+th{background:#fff;color:var(--ink2);font-weight:600;font-size:11px;border-bottom:1px solid var(--line);cursor:pointer;position:sticky;top:0}
+th.l,td.l{text-align:left}
+tbody tr:hover{background:#fafbfc}
+.scroll{overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
+a{color:var(--a);text-decoration:none}a:hover{text-decoration:underline}
+.tk{font-variant-numeric:tabular-nums;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--a-bg);color:var(--a)}
+.tk:hover{background:var(--a);color:#fff;text-decoration:none}
+.up{color:var(--up)}.dn{color:var(--dn)}.fl{color:var(--ink3)}
+.tag{display:inline-block;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.ok{background:var(--g-bg);color:var(--g)}.mid{background:var(--y-bg);color:var(--y)}
+.bad{background:var(--r-bg);color:var(--r)}.blue{background:var(--a-bg);color:var(--a)}
+.neu{background:#f1f2f5;color:var(--ink3)}
+.sc{background:#fff;border:1px solid var(--line);border-left:4px solid var(--g);border-radius:9px;padding:15px;margin-bottom:14px}
+.sc.b{border-left-color:var(--y)}
+.sch{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:4px}
+.sch h3{margin:0;font-size:16px}
+.meta{font-size:11.5px;color:var(--ink3);margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:1.15fr 1fr;gap:14px}
+@media(max-width:880px){.grid2{grid-template-columns:1fr}}
+.kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:1px 14px;font-size:12px;margin:8px 0}
+.kv div{display:flex;justify-content:space-between;border-bottom:1px dotted var(--line2);padding:3px 0}
+.kv span:first-child{color:var(--ink2)}
+.kv span:last-child{font-variant-numeric:tabular-nums;font-weight:600}
+.chartbox{background:#fff;border:1px solid var(--line2);border-radius:7px;padding:6px}
+.sec{margin-top:13px}
+.sec h4{margin:0 0 5px;font-size:12px;color:var(--a);font-weight:700;
+ border-bottom:1px solid var(--line2);padding-bottom:3px}
+.sec p{margin:0;font-size:12.5px;color:var(--ink)}
+.sec ul{margin:0;padding-left:17px;font-size:12.5px}
+.sec li{margin-bottom:3px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+.nw{list-style:none;margin:0;padding:0;font-size:12px}
+.nw li{padding:5px 0;border-bottom:1px dotted var(--line2);display:flex;gap:8px;align-items:baseline}
+.nw .d{color:var(--ink3);font-size:11px;font-variant-numeric:tabular-nums;flex-shrink:0}
+.nw li:last-child{border:none}
+.note{font-size:12.5px;padding:9px 11px;border-radius:6px;margin-top:8px;background:var(--panel);color:var(--ink2)}
+.note b{color:var(--ink)}
+.note.g{background:var(--g-bg);color:#0a6b3c}.note.g b{color:#074d2b}
+.note.r{background:var(--r-bg);color:var(--r)}.note.r b{color:#8e2018}
+.note.t{background:var(--a-bg);color:#123a99}.note.t b{color:#0b2a72}
+.disc{border:1px solid var(--r);background:var(--r-bg);color:var(--r);padding:10px 12px;border-radius:8px;font-size:11.5px;margin-bottom:14px}
+.chg{border-left:3px solid var(--line);padding:0 0 0 13px;margin-bottom:16px}
+.chg h3{margin:0 0 4px;font-size:13px}
+.chg .dt{font-size:11px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.chgi{background:#fff;border:1px solid var(--line);border-radius:7px;padding:9px 11px;margin:7px 0;font-size:12px}
+.chgi.add{border-left:3px solid var(--g)}.chgi.rm{border-left:3px solid var(--r)}
+.empty{color:var(--ink3);font-size:12px;padding:12px;text-align:center}
+.srcs{font-size:11px;color:var(--ink3);margin-top:9px}
+.srcs a{margin-right:10px}
+</style></head><body><div class="wrap">
+
+<h1>텐베거 관제 — 4축 통과 종목</h1>
+<div class="sub" id="asof">KIS 시세·수급 / DART 재무제표 / 네이버 뉴스 · 새로고침을 누르면 최신 데이터를 다시 불러옵니다</div>
+
+<div class="disc">
+조사 결과이며 매수 추천이 아닙니다. 전 종목 애널리스트 커버리지가 없는 소형주로 유동성이 낮고 변동성이 큽니다.
+아래 기업 정보는 공시·언론 보도 기반이며 확인되지 않은 항목은 "확인 불가"로 표기했습니다. 투자 판단과 결과는 본인 책임입니다.
+</div>
+
+<div class="bar">
+  <button id="rf">전체 새로고침</button>
+  <button class="ghost" id="rfq">시세만 빠르게</button>
+  <div class="prog"><div class="pbar"><i id="pb"></i></div><div class="pmsg" id="pm">대기 중</div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab on" data-p="p1">종목 현황</div>
+  <div class="tab" data-p="p2">종목별 상세</div>
+  <div class="tab" data-p="p6">경계종목 · 편입 조건</div>
+  <div class="tab" data-p="p3">뉴스</div>
+  <div class="tab" data-p="p4">변경 이력</div>
+  <div class="tab" data-p="p5">편입 근거</div>
+</div>
+
+<div class="page on" id="p1">
+  <div class="card">
+    <h2>보유 후보 현황 — 티커를 누르면 네이버 금융으로 이동합니다</h2>
+    <div class="scroll"><table id="t1"><thead><tr>
+      <th class="l" data-k="name">종목명</th><th class="l">티커</th>
+      <th data-k="price">현재가</th><th data-k="chg">등락률</th>
+      <th data-k="mcap">시가총액 (원)</th>
+      <th data-k="f5">외국인 5일 (주)</th><th data-k="f30">외국인 30일 (주)</th>
+      <th data-k="o30">기관 30일 (주)</th>
+      <th data-k="fromHi">52주 고점 대비</th><th data-k="per">PER</th>
+      <th class="l">궤적</th><th class="l">현금흐름</th><th class="l">테마</th>
+    </tr></thead><tbody></tbody></table></div>
+    <div class="note">등락률은 <b>전일 대비</b>입니다. 외국인·기관 수급은 순매수 수량이며 플러스가 매수입니다.</div>
+  </div>
+  <div class="card">
+    <h2>20영업일 주가 추이</h2>
+    <div id="minis" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px"></div>
+  </div>
+</div>
+
+<div class="page" id="p2"><div id="cards"></div></div>
+<div class="page" id="p6">
+  <div class="card"><h2>경계종목 — 무엇이 바뀌면 편입되는가</h2>
+  <div class="note" style="margin:0">4축 중 일부만 통과해 대기 중인 종목입니다. 각 종목의 <b>편입 조건</b>과 <b>확인 시점</b>을 명시했습니다.
+    조건이 충족되면 주간 재실행 때 자동으로 편입 판정합니다.</div></div>
+  <div id="bcards"></div>
+</div>
+
+<div class="page" id="p3">
+  <div class="card"><h2>테마 뉴스</h2><div id="thnews"></div></div>
+  <div class="card"><h2>종목 뉴스 · 공시성 제목 (KIS)</h2><div id="stnews"></div></div>
+</div>
+
+<div class="page" id="p4">
+  <div class="card">
+    <h2>워치리스트 변경 이력</h2>
+    <div class="note" style="margin:0 0 12px">주간 재실행 프로젝트가 종목을 편입·제외할 때마다 사유와 함께 여기에 기록됩니다.</div>
+    <div id="chg"></div>
+  </div>
+</div>
+
+<div class="page" id="p5">
+  <div class="card"><h2>4축 통과 근거 — 편입 시점 확정 데이터</h2>
+    <div class="note" style="margin:0 0 10px">아래 수치는 <b>편입 판정 당시의 값으로 고정</b>되어 있습니다. 새로고침해도 바뀌지 않습니다.</div>
+    <div class="scroll"><table><thead><tr>
+      <th class="l">종목명</th><th class="l">분기 궤적</th><th class="l">수급 판정</th>
+      <th>OCF ÷ 영업이익</th><th>편입 시 시가총액 (원)</th><th class="l">최대주주</th>
+    </tr></thead><tbody id="basis"></tbody></table></div>
+  </div>
+</div>
+</div>
+
+<script>
+/* ============ WATCHLIST_START — 주간 프로젝트가 이 블록을 교체합니다 ============ */
+const WATCH = [{"code": "219420", "name": "링크제니시스", "market": "KOSDAQ", "theme": "반도체 검증 소프트웨어", "q": "링크제니시스 SECS GEM 스마트팩토리", "traj": "연속가속", "flow": "매수우위", "cf": "우수", "ocfr": 318.9, "mcapIn": 376, "est": "2003년 12월 설립 · 대표이사 정성우", "hq": "경기 안양시 동안구 시민대로 401 · linkgenesis.co.kr", "biz": "반도체·디스플레이 생산장비와 상위 호스트(MES) 사이의 국제표준 통신규약 SECS/GEM을 구현하는 미들웨어 소프트웨어를 개발해 장비 제조사와 소자 팹에 라이선스·용역으로 공급합니다. 국내 최초로 SECS/GEM 통신 소프트웨어를 상용화해 점유율 1위이며, 이 통신 소프트웨어 계열이 전체 매출의 50% 이상입니다. 두 번째 축은 휴대폰·전자장비 소프트웨어 결함을 자동 검증하는 시스템 검증 자동화입니다. 최근에는 AI 비전 검사와 레거시 장비를 교체 없이 자동화하는 하드웨어+소프트웨어 일체형 제품으로 스마트팩토리 영역을 넓히고 있습니다.", "products": ["XComPro — 반도체·FPD 장비 간 표준 통신 SECS 드라이버 (XGemPro와 합산 매출 50% 이상)", "XGemPro — SEMI 장비운영표준 GEM 기반 장비 통신·운영 소프트웨어", "EQlizer Platform / EQlizer Box — 통합 장비 자동화 플랫폼, 무침투·무부하 설치로 레거시 장비 적용 가능", "VLAD / VLAD Ops — AI 비전 기반 제조 검사 및 산업안전 영상분석", "MAT AI — AI 기반 테스트 자동화 솔루션"], "customers": "삼성전자 (주요 고객사로 언급). 현대차·SK·LG전자가 고객사로 거론되나 계약 규모와 구체 계열사는 확인 불가", "competitors": "확인 불가 — 국내 SECS/GEM 소프트웨어 점유율 1위라는 서술만 확인, 구체적 경쟁 기업명 특정 실패", "industry": "반도체·디스플레이 장비 및 스마트팩토리. 삼성전자가 반도체 생산공정에 AI 휴머노이드 로봇 도입을 추진하며 머신비전 수요 기대가 형성. 회사는 AI 자율제조·산업안전 방향으로 제품군 재편 중", "shareholder": "아이디스파워텔 24.07% (특수관계인 포함 29.53%, 2025년 말). 정성우 대표 4.20%", "issues": ["2026.01.28 — 2025년 연결 매출 16,975,060,498원(+29.5%), 영업이익 1,218,849,843원 흑자전환, 순이익 2,837,630,000원 흑자전환", "2026년 — 스마트공장·자동화산업전 참가, EQlizer Box·VLAD Ops 출품. '레거시 장비도 교체 없이 자동화' 소구", "2026년 — STK 2026 및 AI빅데이터쇼 참가, AI 자율제조 비전 제시", "2026.03.13 — 2025사업연도 사업보고서 제출", "2026년 중 수주·공급계약 공시는 확인되지 않음"], "point": "SECS/GEM 통신 소프트웨어라는 반도체 장비 필수 미들웨어에서 국내 1위를 확보해 진입장벽이 있고, 소프트웨어 라이선스 기반이라 매출이 늘면 이익 레버리지가 큽니다. 영업이익률 29.7%는 44종목 중 최상위권이고 부채비율 12%로 재무도 가장 깨끗합니다. EQlizer·VLAD 신제품이 기존 통신 소프트웨어 고객 기반 위에 얹히는 구조라 교차판매 여지가 있습니다.", "risk": "연 매출 170억원 수준으로 절대 규모가 작아 소수 프로젝트의 수주 시점에 실적이 흔들립니다. 26Q1 매출 3,921,642,184원은 직전 분기 6,544,890,261원보다 오히려 줄었고 이익률로 방어한 구조입니다. 삼성전자 등 특정 대형 고객 의존도가 높을 가능성이 있으며 신제품의 실제 매출 기여도는 아직 공개 확인이 안 됩니다.", "trigger": "2분기 영업이익이 직전 분기(1,163,358,175원)를 밑돌면 4개 분기 연속 증가가 끊겨 궤적이 강등됩니다. 분기 매출 39억원 규모라 단일 계약 이탈에 취약하니 매출이 30억원 아래로 내려가는지 함께 봅니다.", "src": [["링크제니시스 제품 소개", "https://linkgenesis.co.kr/KR/SmartFactory/SmartFactory_XComPro.aspx"], ["2025년 실적 발표", "https://www.datatooza.com/article/20260128114801236952ef3892e7_80"], ["스마트공장 자동화산업전", "https://www.hellot.net/news/article.html?no=111192"]]}, {"code": "464280", "name": "티디에스팜", "market": "KOSDAQ", "theme": "경피약물전달 패치", "q": "티디에스팜 경피약물전달 패치 첩부제", "traj": "개선전환", "flow": "매수우위", "cf": "우수", "ocfr": 170.6, "mcapIn": 253, "est": "2002년 11월 설립 · 대표이사 김철준", "hq": "경기 성남시 분당구 판교로 253 · tdspharm.com", "biz": "경피약물전달시스템(TDDS) 기술로 붙이는 형태의 의약품·의약외품을 개발·제조합니다. 타박상·근육통·신경통용 첩부제가 매출의 대부분이며, 자체 브랜드보다 제약사·유통사에 공급하는 ODM/OEM 비중이 높습니다. 제일헬스사이언스·유한양행에 납품하는 구조이고 최근 의약외품 신규 거래처와 온라인 유통 채널을 넓히고 있습니다. 향후 성장축으로 리바스티그민(치매), 옥시부티닌(요실금) 등 전문의약품 패치를 개발 중입니다.", "products": ["카타플라스마(습포제) — 수분 함유 하이드로겔 첩부제, 매출 비중 약 73.5%", "플라스타 — 접착제에 약물을 도포한 건식 첩부제, 매출 비중 약 16.6~17.1%", "전문의약품(ETC) — 매출 비중 약 9.4%", "의약외품 패치 — 에브리데이닥터 쿨패치 등 신규 거래처향", "일회용 점안제 — 신공장 완공 시 생산 예정"], "customers": "제일헬스사이언스·유한양행(두 곳이 매출 절반 이상), JW중외제약, 에이블팜스리테일, 제일한방. 상위 5개 거래처가 매출의 63.83%. 신규로 퍼슨과 의약외품 계약 체결", "competitors": "신신제약 — 첩부제 전문, 신신파스 플렉스 시리즈 및 캐네펜카타플라스마 등 고접착 하이드로겔 기술 보유", "industry": "국내 첩부제·일반의약품 시장 및 의약외품 유통. 캐나다·베트남·싱가포르·인도네시아·알제리로 해외 영업망 확대 중이며 2026년까지 10개국 수출 목표 제시", "shareholder": "김철준 대표이사 45.91% (특수관계인 포함 46.26%, 2025년 말)", "issues": ["2026년 1분기 — 매출 8,067,864,143원(전년 동기 5,277,437,232원 대비 +50% 이상), 영업이익 1,344,000,836원. 의약외품 신규 거래처 확보와 사업구조 개선이 요인", "2026년 1분기 — 퍼슨과 신규 계약 체결, 에브리데이닥터 쿨패치 공급 개시, 온라인 쇼핑몰 채널 신규 확보", "2026년 하반기 — 신공장 완공 예정. 일회용 점안제 3억 6,000만관 생산능력 추가, 총 공급능력 8억 3,000만관으로 확대 전망", "개발 진행 — 리바스티그민 치매치료 패치, 옥시부티닌 요실금 패치", "2026.06.29 — 2025사업연도 관련 보고서 제출"], "point": "외국인이 30영업일 중 22일 순매수했고 25Q3부터 3개 분기 연속 영업이익률 16~20%를 유지합니다. 영업활동현금흐름이 영업이익의 1.7배이고 매출채권이 10.9억원 회수되며 이익이 실제 현금으로 들어왔습니다. 시가총액 25,300,000,000원으로 후보 중 가장 작아 10배 여력이 가장 크고 PER 6.41배로 저평가 구간입니다.", "risk": "상위 5개 거래처가 매출의 63.83%, 그중 제일헬스사이언스·유한양행 두 곳이 절반 이상을 차지해 고객 편중이 구조적입니다. 연간 매출이 2024년 27,518,775,933원에서 2025년 27,620,873,511원으로 사실상 제자리였습니다. 최대주주 지분 45.91%로 유통 물량이 제한적이고, 산업 사이클 테마가 없어 재평가 촉매가 약합니다.", "trigger": "2분기 실적에서 매출이 80억원대를 유지하는지, 연간 기준으로도 전년(276억원)을 넘어서는지 확인합니다. 제일헬스사이언스·유한양행 중 한 곳이라도 거래 축소가 확인되면 즉시 재검토합니다. 하반기 신공장 가동 지연 여부도 함께 봅니다.", "src": [["2026년 1분기 실적", "https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=04913446645448920"], ["신규 계약·파이프라인", "https://dailypharm.com/user/news/15833"], ["제품 라인업", "https://www.tdspharm.com/product/list1.php?cat_no=2"]]}, {"code": "049630", "name": "재영솔루텍", "market": "KOSDAQ", "theme": "카메라 액추에이터·정밀금형", "q": "재영솔루텍 OIS 액추에이터 카메라모듈", "traj": "연속가속", "flow": "매수우위", "cf": "우수", "ocfr": 113.0, "mcapIn": 1248, "est": "1984년 12월 설립 (2003년 코스닥 상장) · 각자 대표이사 김학권·김승재", "hq": "인천 연수구 갯벌로 118 · jysolutec.com", "biz": "스마트폰 카메라 모듈의 핵심 부품인 자동초점(AF) 액추에이터를 개발·생산합니다. 액추에이터는 렌즈를 최적 초점 위치로 이송하는 구동장치로, VCM·Encoder AF·OIS 세 가지를 모두 양산할 수 있는 국내 유일 전문기업입니다. 주력 생산은 베트남 자회사 재영VINA가 담당하며 월 약 2,200만개 캐파를 보유합니다. 삼성전자 갤럭시 시리즈에 공급하는 구조로, 카메라 고사양화에 따라 단가가 높은 OIS 비중을 늘리는 것이 실적 개선의 핵심입니다. 창업 기반인 정밀금형 사업도 함께 영위합니다.", "products": ["OIS(광학식 손떨림 보정) 액추에이터 — 고가 제품, 갤럭시 S시리즈 전 모델 및 A시리즈 일부 공급", "Encoder AF 액추에이터 — 위치 피드백 방식 자동초점, 갤럭시 S시리즈 전 모델 공급", "VCM 액추에이터 — 보급형 자동초점, 갤럭시 A시리즈 4종 중 3종 공급", "하이브리드 OIS — 업계 최초 개발, 기존 볼타입 대비 정밀도·안정성 우위, 2025년 상반기부터 본격 납품", "정밀금형 — 창업 기반 사업"], "customers": "삼성전자(메인 고객사). 갤럭시 A시리즈 4개 모델 중 3개에 VCM·OIS 공급, S시리즈 전 모델에 Encoder·OIS 공급. 폴더블을 제외한 거의 모든 모델에 카메라 액추에이터 공급", "competitors": "자화전자, 삼성전기, 엠씨넥스 — 모두 삼성전자 스마트폰 OIS 협력사. 자화전자는 2025년 상반기 애플과 OIS 공장 실사를 진행", "industry": "스마트폰 카메라 모듈. 출하량 자체는 정체이나 카메라 고성능화로 대당 부품 단가가 상승하는 국면이며 OIS의 중저가 모델 확산이 진행 중", "shareholder": "재영아이텍 7.94% (기초 11.10%에서 희석, 2025년 말). 특수관계인 포함 14.26% — 김승재 4.95%, 김학권 1.22%", "issues": ["2025년 연결 실적 — 매출 164,500,000,000원(전년 대비 +48%), 영업이익 10,700,000,000원(+7%)", "2025년 상반기 — 매출 71,700,000,000원, 영업이익 300,000,000원. 하이브리드 OIS 초기 양산 수율 하락과 일시 비용으로 수익성 악화", "2025년 7월 — 13,000,000,000원 규모 설비 증설 결정", "2026년 1분기 — 발행주식총수 보통주 116,897,560주, 자본금 58,448,780,000원", "2026년 신규 수주·증설 공시는 확인되지 않음"], "point": "VCM·Encoder·OIS를 모두 양산 가능한 국내 유일 업체로 갤럭시 라인업 대부분에 공급하며, 카메라 고사양화로 제품 믹스가 저가 VCM에서 고가 OIS로 이동하는 구조적 수혜가 있습니다. 외국인이 30일간 856,035주를 순매수해 워치리스트 중 최대이고 최근 5일에도 128,281주를 추가 매수했습니다. 영업활동현금흐름이 영업이익을 상회하고 재고가 79.7억원 감소했으며 52주 고점 대비 28%로 눌려 있습니다.", "risk": "삼성전자 단일 고객 의존도가 절대적이어서 갤럭시 판매량과 단가 협상에 실적이 직결되고 자화전자·삼성전기·엠씨넥스와 삼성 내부 점유율 경쟁이 상시적입니다. 2025년 상반기 영업이익이 300,000,000원에 그친 데서 보듯 하이브리드 OIS 초기 수율 문제로 수익성 변동이 큽니다. 매출 +48% 대비 영업이익 +7%로 마진 구조가 취약하고, 최대주주 지분이 특수관계인 포함 14.26%로 낮아 지배구조 안정성이 약합니다.", "trigger": "52주 고점 18,890원에서 5,340원까지 빠진 배경을 아직 특정하지 못했습니다. 이 하락 이유가 밝혀지면 판정을 다시 봅니다. 2분기에 영업이익률이 15.7%에서 두 자릿수 아래로 내려가면 수율 문제 재발로 보고 강등합니다. 최대주주 지분 14.26%는 경영권 분쟁·추가 희석 위험이 있어 지분 변동 공시를 감시합니다.", "src": [["2025년 실적·사업 분석", "https://www.thevaluenews.co.kr/news/192003"], ["설비 증설", "https://www.etoday.co.kr/news/view/2559563"], ["하나증권 리포트", "https://www.hanaw.com/download/research/FileServer/WEB/info/small_cap/2025/04/01/250402_JYsolutec_F.pdf"]]}, {"code": "060850", "name": "영림원소프트랩", "market": "KOSDAQ", "theme": "ERP 소프트웨어", "q": "영림원소프트랩 ERP 클라우드 AI", "traj": "연속가속", "flow": "매수우위", "cf": "우수", "ocfr": 80.4, "mcapIn": 401, "est": "1993년 5월 설립 · 대표이사 권영범", "hq": "서울 강서구 양천로 583 우림블루나인 A동 23층 · ksystem.co.kr", "biz": "1997년 국내 최초 국산 ERP 패키지 K-System을 출시한 토종 ERP 전문기업입니다. 매출 300억원 이상 중견기업(클라우드는 100~200억원대)을 대상으로 ERP 패키지를 판매하고 고객사 업무 프로세스에 맞춰 구축해 줍니다. 수익은 라이선스 판매, 구축·추가개발 용역, 매년 반복되는 유지관리 수수료, 클라우드 구독의 조합이며 최근 하이브리드 모델로 이동 중입니다. 제조·유통·건설·제약·의료기기·식품·방산·공공 등 산업별 특화 모듈을 갖춘 커스터마이징 유연성이 경쟁력이고, 국내외 약 2,000여 개 기업에 공급했습니다.", "products": ["K-System Ace (구축형 ERP) — 산업별 특화 대표 제품, 2024년 매출 33,800,000,000원(+7.8%)", "클라우드 ERP (System Ever / K-System Cloud) — 구독형 SaaS, 2024년 매출 4,300,000,000원(+25.3%)", "유지관리 — 2021년 기준 매출 비중 25.8%의 반복 매출원", "추가개발 용역 — 2021년 기준 비중 7.1%", "K-System BI / K-System IFRS — BI·IFRS 회계 연계 모듈"], "customers": "일동후디스, 롯데제과, 스킨푸드, 케이박스, 인도네시아 글로벌 스포츠화 OEM 제조사(사명 비공개). 방산·공공·비영리 부문 고객사 확보 보도되나 개별 기업명 확인 불가", "competitors": "더존비즈온(국산 1위, 점유율 약 16.6%), SAP코리아(약 20.5%), 오라클(약 4%). 영림원 점유율 약 5.5%로 국산 2위권", "industry": "기업 전산화·DX 수요. 국내 퍼블릭 클라우드 ERP 시장이 2024년 374,400,000,000원에서 2029년 832,400,000,000원으로 연평균 17.1% 성장 전망. 온프레미스에서 클라우드 구독형으로 전환, AI를 ERP에 결합한 AX 수요 확대가 방향", "shareholder": "권영범 대표 14.00% (2025년 사업보고서 기준). 특수관계인 포함 19.49%", "issues": ["2026.07.14 — 데이터 스크래핑 전문기업 인포텍코퍼레이션과 금융 데이터 기반 AI ERP 고도화 공동사업 MOU 체결", "2026.05.14 — AI ERP 신제품 3종 공개(K-System Ace I&I, K-Smart 세일즈먼, 에버온사람). AX 시장 정조준, 2030년 매출 1억 달러 비전 제시", "2026년 초 — 2025년 연결 매출 79,880,000,000원(+27.7%), 영업이익 4,220,000,000원(+89.9%), 순이익 6,380,000,000원(+94.4%)", "2025.02 — 인도네시아 법인이 글로벌 스포츠화 OEM 제조사와 약 13,100,000,000원 규모 시스템 공급계약 체결", "R&D센터 건립에 21,800,000,000원 투자 계획 보도"], "point": "유지관리·클라우드 구독이라는 반복 매출 위에 구축형 라이선스가 얹히는 구조라 매출 하방이 단단하고, 2025년 매출 +27.7%·영업이익 +89.9%로 하이브리드 모델의 레버리지가 실적으로 확인됐습니다. 4개 분기 연속 영업이익이 증가하고 이익률도 0.4%에서 8.2%로 단조 상승했습니다. 소프트웨어 사업이라 장비주 대비 실적 변동성이 낮고, 국산 ERP 2위로 SAP·오라클 대체 수요와 클라우드 시장 연 17% 성장을 동시에 흡수할 위치입니다.", "risk": "AI ERP 신제품과 R&D센터에 대규모 선투자가 진행 중이어서 성과가 나오기 전까지 비용이 이익률을 압박할 수 있고, 회사도 3년 내 성과가 날 때까지 버틴다는 취지로 언급한 바 있습니다. 영업이익률 8.2%는 워치리스트 중 낮은 편이고 성장 속도도 완만합니다. 52주 고점 대비 67%로 이미 상당 부분 올라 진입 가격 메리트가 적으며, 매출채권이 7,309,583,084원에서 9,797,036,545원으로 증가했습니다.", "trigger": "AI ERP 선투자로 2분기 영업이익이 직전 분기(1,798,375,868원)를 밑돌면 연속 증가가 끊겨 강등합니다. R&D센터 218억원 투자가 실제 집행되면 현금흐름 부담을 재점검합니다. 국내 중견 제조업 IT예산 축소 신호도 함께 봅니다.", "src": [["고객 사례", "https://www.ksystem.co.kr/case-studies/"], ["AI ERP 신제품 발표", "https://www.bloter.net/news/articleView.html?idxno=657733"], ["인포텍 MOU", "https://zdnet.co.kr/view/?no=20260714153517"]]}, {"code": "007120", "name": "미래아이앤지", "market": "KOSPI", "theme": "금융 IT · SWIFT 솔루션", "q": "미래아이앤지 SWIFT 금융솔루션", "traj": "개선전환", "flow": "매수전환", "cf": "우수", "ocfr": 170.8, "mcapIn": 302, "est": "1971년 3월 설립 · 대표이사 박우람", "hq": "서울 강남구 삼성로 648 · miraeing.co.kr", "biz": "1971년 설립 후 통신·영상기기 제조업을 하다 2010년경 금융솔루션으로 전환했습니다. 현재 핵심은 국제은행간통신협회(SWIFT) 망을 통한 국가 간 금융 전문 송수신을 처리하는 통합 메시징 솔루션과 자금세탁방지(AML)·제재 대상 필터링 등 컴플라이언스 솔루션을 국내 은행 및 해외지점에 공급·구축하고 유지보수 수수료를 받는 B2B 모델입니다. SWIFT 관련 솔루션을 국내에 최초 도입한 이력으로 국내 대다수 은행의 SWIFT 시스템 유지보수를 담당한다고 밝히고 있습니다. 연예 매니지먼트사 판타지오 등을 계열로 두는 지주회사적 성격도 있습니다.", "products": ["eNisis — 자체 개발 SWIFT 전문 관리·통합 메시징 솔루션, 주력 제품", "SafeWatch — 자금세탁방지(AML)·제재 필터링 등 금융 컴플라이언스 솔루션", "Summit — 외화 트레이딩 솔루션", "SWIFT 시스템 유지보수 — 국내 은행 및 해외지점 대상 반복 매출", "기타 SI 및 B&E사업·임대관리사업"], "customers": "하나은행, 신한은행, 우리은행 등 국내 은행권 및 해외지점. 개별 고객사명 추가 확인 불가", "competitors": "확인 불가 — 국내 SWIFT 전문 관리 영역에서 뚜렷한 상장 경쟁사가 특정되지 않음", "industry": "은행권 IT 투자, 특히 국제결제·외환 인프라와 규제 대응(AML·제재 준수) 예산. 자금세탁방지 규제 강화와 국경 간 송금 표준 전환이 구조적 교체 수요 요인", "shareholder": "2026년 3~4월 경영권 매각으로 변경. 기존 (주)엑스 11.81% + 남산물산 10.47% = 22.28%였으나 2026.04.03 기준 엑스 등 잔여 지분 1.97%로 축소. 스텔라PE가 설립한 스텔라이노베이션투자목적회사가 최대주주", "issues": ["2026.03.16 — 최대주주 보유 보통주 6,436,010주를 스텔라이노베이션투자목적회사에 양도하는 총 120,000,000,000원 규모 경영권 양수도 계약 체결. 계약금 10,000,000,000원, 1차 중도금 40,000,000,000원(2026.3.27), 2차 중도금 30,000,000,000원(2026.6.30), 잔금 40,000,000,000원(2027.3.20)", "2026.03.17 — 경영권 매각 소식에 주가 상한가", "2026.03.31 — 계열사 판타지오는 이번 패키지 딜에서 제외(선제적 리스크 관리 차원)로 보도", "2026.04.03 — 대량보유상황보고, 엑스 등 보유 주식 5,866,010주 감소", "판타지오 실적 부진 — FY2025 매출 38,200,000,000원, 영업손실 8,000,000,000원. 2025년 7~9월 추가 영업손실 900,000,000원"], "point": "SWIFT 전문 관리와 AML 컴플라이언스는 은행이 한 번 도입하면 교체가 어려운 미션 크리티컬 인프라라 유지보수 기반 반복 매출의 안정성이 높고, 국내 대다수 은행을 레퍼런스로 확보한 진입장벽이 있습니다. 25Q1 적자 이후 4개 분기 연속 흑자에 영업이익률 20~34%로 안착했고 영업활동현금흐름이 영업이익의 1.7배입니다. 시가총액 30,200,000,000원으로 워치리스트 중 두 번째로 작습니다.", "risk": "본업 솔루션 매출이 2023년 기준 13,000,000,000원 수준으로 작고 은행권 IT 발주 시기에 따라 변동성이 큽니다. 판타지오 등 비본업 계열사의 대규모 영업손실이 연결 실적을 훼손해 왔고 PER이 음수인 이유도 여기 있습니다. 경영권 양수도 잔금 지급일이 2027년 3월까지로 길어 중도금·잔금 미납 시 거래 무산 위험이 남아 있으며, 인수 주체가 재무적 투자자여서 인수 이후 전략 방향이 불확실합니다. 26Q1 영업이익률 21.8%는 직전 3개 분기 30~34%보다 낮아진 둔화 신호입니다.", "trigger": "경영권 양수도 2차 중도금 300억원(2026.6.30 예정)과 잔금 400억원(2027.3.20)의 실제 납입 여부가 최대 변수입니다. 미납 또는 계약 변경 공시가 나오면 즉시 제외를 검토합니다. 판타지오 연결 손실이 확대되거나 2분기 영업이익률이 20% 아래로 내려가면 강등합니다.", "src": [["2025년 사업보고서", "https://kind.krx.co.kr/external/2026/03/23/000996/20260323004603/11011.htm"], ["경영권 매각 딜 구조", "https://www.thebell.co.kr/front/newsview.asp?key=202603181053447640109465"], ["매각 관련 보도", "https://www.digitaltoday.co.kr/news/articleView.html?idxno=653396"]]}, {"code": "451220", "name": "아이엠티", "market": "KOSDAQ", "theme": "반도체 건식 세정·레이저 장비", "q": "아이엠티 반도체 세정장비 워피지 SK하이닉스", "traj": "연속가속", "flow": "매수우위", "cf": "우수", "ocfr": 222.2, "mcapIn": 649, "est": "2000년 11월 설립 · 대표이사 최재성", "hq": "경기 수원시 영통구 신원로 306 1동 8층 · imt-c.co.kr", "biz": "레이저 쇽웨이브와 CO2(드라이아이스) 원천기술을 기반으로 반도체 건식 세정장비와 레이저 열처리 장비를 자체 설계·제조해 메모리·파운드리·OSAT 업체에 직납합니다. 물이나 화학약품을 쓰지 않고 레이저 충격파와 CO2 입자로 오염물을 떼어내는 방식이라 프로브카드·소켓·번인보드·웨이퍼 링프레임 등 습식 세정이 곤란한 대상에 적용됩니다. EUV 포토마스크용 레이저 베이킹 장비는 국내 유일 사업자로 보도됩니다. 2024년 7월 인수한 자회사 아이엠텍플러스를 통해 프로브카드용 다층 세라믹 기판까지 확장했습니다.", "products": ["HBM용 CO2 Ring Frame Wafer 세정장비 — 2025년 9월 수주 1,780,000,000원(직전 매출 대비 13.14%)", "EUV Mask Laser Baking 장비 — EUV 포토마스크 레이저 열처리, 국내 유일 사업자", "프로브카드·소켓 레이저 세정장비 — 2005년 세계 최초 소켓 세정장비 개발 이력", "번인보드 CO2 세정장비 — HBM 테스트 공정용", "워피지 컨트롤러 — SK하이닉스와 공동개발 중인 웨이퍼 휨 제어 장비, 2026년 말 검증 완료 후 2027년 양산 목표 (매출 미발생)", "MLC 기판(자회사 아이엠텍플러스) — HTCC 기반 프로브카드용 세라믹 기판"], "customers": "SK하이닉스(워피지 장비 공동개발, 2025년 기술혁신기업 8기 선정으로 자금·특허 지원), 삼성전자(드라이아이스 건식 세정장비 성능 검증 진행 중, 2026년 6월 기준), 마이크론(2024년 4월 HBM용 웨이퍼 세정장비 공급계약). TSMC 언급 보도가 있으나 계약 근거는 확인 불가", "competitors": "확인 불가 — 국내 EUV 마스크 베이킹·CO2 건식세정 영역에서 사실상 단독 사업자로 보도", "industry": "HBM 고단 적층과 메모리 증설 사이클이 직접 수요. SK하이닉스는 M15X DRAM 투자에 이어 2026년 하반기 중국 다롄 2공장 NAND 투자 예정이고 Y1팹은 2027년 2월 클린룸 오픈 예정. 2027년 DRAM 투자는 130~140K/M로 전년 대비 최대 2배 전망. HBM 단수가 올라갈수록 웨이퍼 박화로 워피지·오염 이슈가 심화돼 세정·열처리 장비 채택 필요성 증가", "shareholder": "DART 기준 본인은 최재성 14.34%. 개별 최다 보유자는 최종립 등기임원 15.18%. 특수관계인 포함 39.94%", "issues": ["2026.06.01 — 전환사채 12,000,000,000원 조달. 대부분 양산 전 장비 검증용 클린룸 구축에 투입. 기존 클린룸으로는 워피지 장비 검증 불가", "2026.06.02 — 최재성 대표 인터뷰. SK하이닉스 연구진과 월 2회 정기 미팅으로 워피지 제어 장비 공동개발, 연내 시제품 완성·내년 양산 진입 목표. 삼성전자에서 드라이아이스 건식 세정장비 성능 검증 진행 중", "2026.06.08 — 워피지 컨트롤러 개발 마무리 단계, 공정 적용 성능 테스트 예정. 최 대표 전년 대비 50% 이상 성장 목표 언급. 자회사 아이엠텍플러스 캐파 증설 추진", "2026.03.18 — 2025년 연결 매출 32,940,000,000원(전년 13,570,000,000원 대비 +142.9%), 영업이익 127,000,000원 흑자전환"], "point": "SK하이닉스가 자금·특허까지 지원하는 기술혁신기업으로 워피지 컨트롤 장비를 공동개발 중이며, 이 장비는 전공정에 투입돼 활용 빈도가 높아 양산 채택 시 매출 단위가 한 단계 도약할 여지가 있습니다. 마이크론 공급 이력에 삼성전자 검증까지 진행돼 3대 메모리 고객 확보 가능성이 열려 있습니다. 4개 분기 연속 영업이익이 증가했고 영업활동현금흐름이 영업이익의 2.2배이며 매출채권·재고 증가폭이 미미해 이익의 질이 가장 깨끗한 축입니다.", "risk": "2025년 연결 영업이익이 127,000,000원에 불과할 정도로 수익성 기반이 취약하고 매출 규모가 329억원대라 단일 수주 지연만으로도 실적이 흔들립니다. 핵심 성장동력인 워피지 장비는 아직 검증 단계로 매출 반영이 2027년 이후이며, PER 66.45배로 워치리스트 중 유일하게 비싸 멀티플 확장 여지가 적습니다. 전환사채 120억원에 따른 지분 희석 가능성이 있고 부채비율 128%입니다. 26Q1 영업이익이 직전 분기보다 감소해 연속 증가가 이미 끊겼습니다.", "trigger": "워피지 컨트롤러 검증 결과가 2026년 말 나옵니다. 검증 실패 또는 일정 지연 공시가 나오면 즉시 제외를 검토합니다. 전환사채 120억원의 전환청구 개시 시점과 물량을 감시하고, 2분기 영업이익이 다시 감소하면 궤적을 등락반복으로 강등합니다.", "src": [["대표 인터뷰 — 워피지 장비", "https://www.hankyung.com/article/202606010159i"], ["워피지 개발 진행 상황", "https://www.mt.co.kr/stock/2026/06/08/2026060808389657155"], ["사업 개요", "https://www.digitaltoday.co.kr/news/articleView.html?idxno=628836"]]}, {"code": "382800", "name": "지앤비에스 에코", "market": "KOSDAQ", "theme": "반도체·태양광 스크러버", "q": "지앤비에스 에코 스크러버 SK하이닉스 태양광", "traj": "개선전환", "flow": "매수우위", "cf": "우수", "ocfr": 222.7, "mcapIn": 1343, "est": "2005년 4월 설립 · 대표이사 박상순", "hq": "경기 안성시 대덕면 모산로 401-14 · gnbseng.com", "biz": "반도체·태양광·디스플레이 생산공정에서 배출되는 유해가스와 분진을 정화하는 스크러버를 설계·제조해 팹 운영사에 공급합니다. 주력은 플라즈마 방식이며 물을 쓰지 않는 WFPS(Water Free Plasma Scrubber)로 SK하이닉스 벤더에 진입했습니다. 국내 팹뿐 아니라 고객사의 해외 거점에도 직접 공급하며, 태양광 셀 제조라인용 스크러버에서는 중국·인도 시장을 과점하고 있습니다. 반도체와 태양광이라는 두 개의 설비투자 사이클에 실적이 연동되는 구조입니다.", "products": ["플라즈마 스크러버 / WFPS — 주력 제품. 2017년 12월 SK하이닉스향 64대 수주가 레퍼런스", "파우더 트랩 — 공정 부산물 분진 포집", "백연 제거 장치 — 배기 백연 저감", "전방 매출 비중(2025년) — 반도체 50%, 태양광 11%, 디스플레이 1%, 기타 38%", "금액 기준(2025년) — 매출 약 92,000,000,000원 중 반도체 46,000,000,000원, 태양광 9,700,000,000원"], "customers": "SK하이닉스(반도체 주요 벤더, 국내·해외 거점 공급), 인텔 다롄 팹, 한화큐셀. 인도 태양광에서 타타그룹 계열 TP솔라, 아다니, 와리와 총 20,000,000,000원 규모 수주 계약. 삼성전자 납품 여부는 확인 불가", "competitors": "유니셈(국내 스크러버 1위, 삼성전자·SK하이닉스 모두 납품하는 유일 업체), GST(083450), CSK. 매출 규모는 유니셈·GST 대비 작은 것으로 추정", "industry": "SK증권은 2026~2028년을 반도체와 태양광 투자가 맞물리는 초호황기로 규정. 반도체는 SK하이닉스 M15X DRAM 투자에서 2026년 하반기 다롄 2공장 NAND 투자로 이어지고 2027년 DRAM 투자가 최대 2배 증가 전망. 태양광은 인도가 2030년까지 연간 신규 설치를 20GW에서 50GW로 확대하고 2026년 6월부터 셀 국산화 정책 시행 예정. 부문별 전망은 반도체 매출 2025년 460억에서 2027년 850억원, 태양광 2025년 97억에서 2026년 550억원", "shareholder": "박상순 대표 22.11%(7,036,292주, 2025년 말). 특수관계인 15인 포함 29.71%. 외국인 지분율 4.91%", "issues": ["2026.04.24 — SK증권 커버리지 개시 리포트 '초호황 국면 진입'. Not Rated, 당시 주가 7,190원·시총 229,000,000,000원", "2026년 6월 — 인도 태양광 셀 국산화 정책 시행 예정. LS증권은 태양광 매출 호재로 평가", "2026년 연초 — 테슬라 태양광 100GW 생산 프로젝트 발표. HJT 셀 증착장비 공급망에 스크러버 레퍼런스 보유로 낙수효과 기대", "2026.03.12 — 2025년 매출 92,000,000,000원(+29.9%), 영업이익 8,000,000,000원(영업이익률 8.4%, -33.4%), 순이익 6,000,000,000원. 주당 현금배당 120원(배당성향 60.5%)으로 상장 후 첫 배당", "인도 TP솔라·아다니·와리 등과 총 20,000,000,000원 규모 수주 계약 체결"], "point": "반도체와 태양광 두 축을 동시에 보유해 한쪽 사이클이 꺾여도 다른 쪽이 받쳐주는 구조이며, 2026~2028년은 두 사이클이 동시에 상승 국면에 진입한다는 것이 SK증권 시각입니다. 부채비율 25%, 유동비율 1,052.9%로 재무구조가 매우 견실하고 순차입금이 마이너스라 증설·수주 확대 여력이 있습니다. 영업활동현금흐름이 영업이익의 2.2배이고 재고가 35.7억원 감소했으며 2025년 첫 배당으로 주주환원도 시작했습니다. SK하이닉스 CAPEX에 직결돼 워치리스트 중 산업 사이클 근거가 가장 명확합니다.", "risk": "실적이 전방 설비투자 사이클에 그대로 노출돼 2022~2023년 중국 태양광 붐 이후 공급과잉으로 투자가 축소되자 영업이익이 180억에서 120억, 80억원으로 2년 연속 급감했고 매출총이익률도 42.5%에서 25.0%로 크게 훼손됐습니다. 반도체 매출이 SK하이닉스 한 곳에 집중돼 삼성전자 벤더 진입 여부가 확인되지 않으며 유니셈·GST 대비 규모가 작아 협상력이 열위입니다. 2023년은 별도재무제표, 2024~2025년은 연결로 회계 기준이 달라 연간 비교가 왜곡됩니다. 태양광 매출 550억원 전망은 정책·프로젝트 실행에 좌우되는 추정치입니다.", "trigger": "인도 태양광 셀 국산화 정책(2026년 6월 시행 예정)의 실제 시행과 그에 따른 수주 공시를 확인합니다. 태양광 매출이 2026년 상반기까지 200억원에 못 미치면 550억원 전망은 하향으로 보고 재평가합니다. SK하이닉스 다롄 2공장 NAND 투자 집행 여부가 반도체 매출의 관건이며, 삼성전자 벤더 진입 공시가 나오면 상향 요인입니다.", "src": [["SK증권 커버리지 리포트", "https://www.sks.co.kr/data1/research/qna_file/20260423090406805_0_ko.pdf"], ["사업 개요", "https://www.fnnews.com/news/202405090934071616"], ["태양광 사업 현황", "https://m.news.nate.com/view/20250225n06094"]]}];
+const BORDER = [{"code": "032580", "name": "피델릭스", "market": "KOSDAQ", "theme": "메모리 팹리스", "q": "피델릭스 메모리 반도체 팹리스", "traj": "개선전환", "flow": "매수전환", "cf": "주의", "ocfr": 20.1, "mcapIn": 1173, "biz": "자체 생산설비 없이 메모리 반도체를 설계·판매하는 팹리스 기업으로 생산은 대만 Powerchip 등 파운드리와 국내외 후공정 업체에 위탁합니다. 2026년 1분기 매출의 97.6%가 모바일 애플리케이션용 메모리 제품이고 2.4%가 메모리 설계용역 등입니다. 모바일 중심에서 IoT·자동차 전장용 저전력 메모리로 영역을 넓히고 있습니다.", "products": ["Pseudo SRAM(PSRAM) — 저전력·저대기전류 구현이 강점", "Low Power DRAM / Mobile DDR(LPDDR 계열) SDRAM", "Serial NOR Flash", "MCP(멀티칩패키지) — NOR based / NAND based"], "customers": "Semtech Corporation(미국 아날로그·IoT 통신 반도체 기업) — 2026.7.22 공급계약으로 확인. 그 외 개별 고객사명은 비공개", "industry": "스마트폰·모바일 기기, IoT 디바이스, 차량용 인포테인먼트·ADAS", "shareholder": "동심반도체주식유한공사(Dosilicon, 중국) 30.20% (안승한 대표 0.30% 포함 계 30.50%, 2025년 말)", "issues": ["2026.02.03 — 2025년 개별 매출 53,620,000,000원(+19.6%), 영업손실 -2,070,000,000원(적자 축소), 당기순손실 -2,960,000,000원(적자 확대)", "2026.03.23 — 대표이사 변경, 김학수 공동대표 신규 선임", "2026.07.22 — 미국 Semtech와 6,640,200,000원 규모 메모리반도체 공급계약(2025년 매출 대비 12.3%, 계약기간 2026.7.22~9.11)", "2026 상반기 — 주가 상승률 코스닥 상위권(+330~347%). 2026년 5월 메모리·광통신 테마 관련 투자위험종목 지정 이력"], "why": "영업이익 4,331,943,526원에 영업활동현금흐름 869,919,205원으로 통과선 50%에 미달합니다. 다만 성격이 다릅니다 — 현금흐름 자체는 플러스이고 매출채권은 15,530,555,220원에서 14,091,940,201원으로 오히려 14억원 줄었습니다. 재고자산만 23,129,515,568원에서 31,905,903,768원으로 88억원 늘었는데 같은 기간 매출이 10,879,557,541원에서 21,489,395,543원으로 97.5% 증가했으므로 성장에 앞선 재고 축적으로 읽힙니다. 매출채권과 재고가 동시에 부푸는 부실 패턴은 아닙니다.", "cond": "2분기 실적에서 영업활동현금흐름이 영업이익의 50% 이상으로 회복되면 즉시 편입합니다. 함께 볼 것 두 가지 — 2년 연속 순손실 상태라 반기 기준 순이익이 흑자로 돌아서는지, 그리고 Semtech 계약이 단발성인지 반복 수주로 이어지는지입니다.", "when": "2026년 2분기 실적 공시 (8월 중순)", "src": [["손익구조 변동 공시", "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260203900348"], ["Semtech 공급계약", "https://n.news.naver.com/mnews/article/018/0006334685"]]}, {"code": "143540", "name": "영우디에스피", "market": "KOSDAQ", "theme": "OLED·반도체 검사장비", "q": "영우디에스피 검사장비 웨이퍼 범프", "traj": "개선전환", "flow": "매도우위", "cf": "미검증", "ocfr": null, "mcapIn": 461, "biz": "디스플레이·반도체 검사장비 전문기업으로 OLED 검사장비를 주력으로 하며 최근 웨이퍼 범프 3D 검사장비로 반도체 후공정 시장에 진입하고 있습니다. 스마트 로봇 이송 시스템과 2차전지 자동화 라인 등 자동화 설비도 함께 공급합니다.", "products": ["디스플레이(OLED) 검사장비 — 삼성디스플레이 납품 주력", "웨이퍼 범프 3D 검사장비 — 시간당 웨이퍼 103장 검사, 2026년 7월 공개", "스마트 로봇 이송 시스템", "2차전지 모듈팩 자동화 라인 / 물류 자동화 시스템"], "customers": "삼성디스플레이(2026.6.25 4,500,000,000원, 2024.5 3,660,000,000원 등 반복 수주), 제이에스(2026.6.24 스마트 로봇 이송 시스템 5,450,000,000원), 디에이치(2025.6 이차전지 모듈팩 자동화 라인 3,800,000,000원)", "industry": "OLED·마이크로LED 디스플레이 패널, 반도체 후공정(범프 검사), 2차전지, 산업용 로봇·스마트팩토리", "shareholder": "박금성 대표이사 18.18% (특수관계인 포함 19.38%, 2025년 말). 2026.7.31 기준 19.91%로 상승", "issues": ["2026.02.23 — 2025년 연결 매출 80,500,000,000원(+36.3%), 영업이익 5,910,000,000원 흑자전환, 순이익 5,590,000,000원 흑자전환", "2026.06.24~25 — 제이에스와 5,450,000,000원(매출 대비 6.77%), 삼성디스플레이와 4,500,000,000원(5.59%) 잇단 공급계약", "2026.07.24 — 임원 3인(신정식·채영식·이동윤)이 7월 중 자사주 183,000주 장내매수. 책임경영 강화 명분", "2026.07.28~29 — 디스플레이 장비·부품 업종 전체가 7%대 동반 급락(전방 투자 지연·차익실현)"], "why": "연간 실적이 3년 연속 개선된 유일한 종목으로 궤적은 44종목 중 가장 깨끗합니다. 그런데 외국인이 30영업일 중 25일 매도해 777,177주를 순매도했고 최근 5일도 -127,108주입니다. 실적과 수급이 정반대로 가는 이유를 찾기 위해 2026년 1~8월 DART 공시 27건을 전수 확인했습니다. <b>유상증자·전환사채·무상감자·실적 하향 경고 공시는 한 건도 없었습니다.</b> 오히려 반대 신호만 확인됩니다 — 박금성 대주주의 6월 공시는 신규 담보가 아니라 기존 주식담보계약 400만주의 만기연장이고, 7월 대주주측 지분은 19.37%에서 19.91%로 늘었으며, 블랙펄자산운용도 6.04%에서 7.42%로 장내매수했습니다. 임원 3인은 7월에 자사주 183,000주를 샀습니다. <b>즉 종목 고유의 악재는 확인되지 않고, 7월 말 디스플레이 장비 업종 전반의 동반 급락만 존재합니다.</b>", "cond": "외국인 순매수가 5영업일 연속 플러스로 전환하면 즉시 현금흐름을 검증하고 편입을 판정합니다. 그와 별개로 웨이퍼 범프 3D 검사장비의 첫 실제 수주 공시가 나오면 반도체 장비주로 재평가되는 근거가 생기므로 그때도 즉시 재검토합니다.", "when": "외국인 수급 매수전환 확인 시 · 웨이퍼 범프 검사장비 첫 수주 공시 시", "src": [["손익구조 변동 공시", "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260223900266"], ["임원 자사주 매입", "https://n.news.naver.com/mnews/article/293/0000088103"]]}, {"code": "071200", "name": "인피니트헬스케어", "market": "KOSDAQ", "theme": "의료영상 PACS", "q": "인피니트헬스케어 PACS 의료영상", "traj": "개선전환", "flow": "매수우위", "cf": "주의", "ocfr": 34.1, "mcapIn": 1940, "biz": "의료영상저장전송시스템(PACS)을 중심으로 한 의료 IT 솔루션 기업으로 국내 PACS 시장 점유율 1위입니다. 국내 3개·해외 9개 등 12개 종속회사를 통해 해외 의료기관에 솔루션을 공급합니다.", "products": ["PACS(의료영상저장전송시스템) — 주력, 국내 1위", "클라우드 기반 의료영상 관리 서비스", "의료 AI 솔루션 연동 플랫폼 — 타사 AI를 자사 PACS 네트워크에 연동", "해외향 PACS·의료정보 솔루션 — 미국·일본 등 종속회사 경유"], "customers": "강원대학교병원, 강원특별자치도영월의료원, 강릉의료원, 평창군보건의료원, 성남시의료원(2026년 정부 주도 Project ARGOS 컨소시엄 참여 기관). 협력사로 크리스타비전·휴런·워크원오원·DK메디칼시스템·테크하임", "industry": "병원·의료기관 디지털 인프라, 의료 AI, 공공의료·원격판독", "shareholder": "(주)솔본 48.66% (특수관계인 포함 50.50%, 2025년 말). 2026.7.20 대량보유 공시 기준 51.80%로 상승", "issues": ["2025.11~2026.01.20 — 전 대표이사 배임 혐의로 관리종목 지정 및 상장적격성 실질심사. 기업심사위원회 상장유지 의결로 1월 21일 거래 재개", "2026.03.13 — 2025년 연결 매출 102,390,000,000원(+0.8%), 영업이익 14,220,000,000원(+2.3%), 순이익 26,750,000,000원(-40.1%)", "2026.07.27~28 — 서울남부지법 판결. 전 공동대표가 제기한 임시주총 결의 무효 소송은 각하·기각(회사 승소). 다만 소액주주 측 건에서 2025.6 임시주총의 감사 자격요건 강화 정관변경이 전자위임장 일괄 무효처리를 이유로 무효 선고. 회사는 7월 28일 항소", "2026.07.08 / 07.30 — 미국계 Miri Capital Management 지분 5.14%에서 7.10%로 확대(단순투자)"], "why": "영업이익 9,467,212,128원에 영업활동현금흐름 3,231,098,733원으로 통과선 50%에 미달합니다. 매출채권이 24,000,199,926원에서 28,631,084,310원으로, 재고가 447,344,808원에서 1,091,694,829원으로 늘어 현금 회수가 지연됐습니다. 외국인이 30일 중 25일 순매수하며 566,425주를 담아 수급은 최상위이나 52주 고점 대비 82%로 진입 메리트가 낮고, 연간 매출 성장률이 +0.8%로 성장 근거가 부족합니다.", "cond": "2분기 영업활동현금흐름이 영업이익의 50% 이상으로 개선되고, 소액주주·전 경영진과의 경영권 분쟁 항소심이 종결되며, 솔본과의 내부거래 논란이 정리되면 편입을 검토합니다. 반대로 매출 정체가 이어지면 성장 근거가 없어 경계에서도 제외합니다.", "when": "2026년 2분기 실적 공시 후 · 지배구조 소송 종결 시", "src": [["전자위임장 판결 보도", "https://n.news.naver.com/mnews/article/018/0006341215"], ["손익구조 변동 공시", "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260313902181"]]}];
+/* ============ WATCHLIST_END ============ */
+
+/* ============ CHANGELOG_START — 주간 프로젝트가 이 블록에 항목을 추가합니다 ============ */
+const CHANGELOG = [
+ {date:"2026-08-02", title:"3회차 · 트리거 점검 — 변동 없음",
+  summary:"2026년 2분기(반기) DART 미공시를 5종목으로 확인했습니다(링크제니시스·지앤비에스에코·피델릭스·재영솔루텍·티디에스팜 전부 NO_DATA, reportCode 11012). 따라서 실적·궤적 기반 트리거는 이번 회차 판정 불가이며, 수급·시총·공시 기반만 점검했습니다. 보유 7종목 중 재검증 트리거가 발동한 종목은 없고, 경계 3종목 중 편입 조건을 충족한 종목도 없어 워치리스트는 7종목을 그대로 유지합니다. 코스피 6,595.45 · 코스닥 719.76으로 직전 회차와 동일합니다.",
+  added:[],
+  removed:[],
+  notes:["실적 기반 판정 불가 — 2026년 2분기 반기보고서 미공시(5종목 NO_DATA 확인, 2026-08-02 기준)",
+   "영우디에스피(143540) 수급 재확인 — 외국인 30영업일 -777,177주, 최근 5일 -127,108주, 순매수일수 5/30. 직전 회차와 동일해 편입 조건(5영업일 연속 순매수 전환) 미충족",
+   "다음 전체 재실행 권장 시점 — 2026년 8월 중순 반기보고서 공시 후. 그때 피델릭스·인피니트헬스케어 OCF 회복 여부와 보유 7종목 궤적 유지 여부가 한꺼번에 판가름납니다"]},
+ {date:"2026-08-02", title:"경계종목 3종 현금흐름 검증 — 편입 0건",
+  summary:"경계종목이던 피델릭스·에이치엠넥스·미래반도체의 2026년 1분기 영업활동현금흐름을 조회한 결과 3종목 모두 편입 기준(OCF ÷ 영업이익 50% 이상)에 미달했습니다. 워치리스트는 7종목을 유지합니다. 특히 에이치엠넥스는 외국인이 30영업일 중 25일을 순매수했음에도 현금흐름이 마이너스로, 수급 축만으로 판단하면 안 되는 사례가 확인됐습니다.",
+  added:[],
+  removed:[
+   {name:"미래반도체",code:"254490",why:"이익의 질 경고로 편입 부결. 영업이익 32,176,733,207원인데 영업활동현금흐름은 -95,759,272,549원(-297.6%). 매출채권이 54,784,536,963원에서 100,095,623,783원으로 453억원, 재고자산이 79,786,644,099원에서 169,246,454,889원으로 895억원 증가했고 그 부족분을 차입금 108,000,000,000원으로 메웠습니다. 시가총액 197,900,000,000원인 회사가 한 분기에 시가총액의 절반이 넘는 금액을 차입한 구조입니다. 반도체 유통업 특성상 매출 급증 시 운전자본이 커지는 것은 구조적이나 규모가 과도합니다."},
+   {name:"에이치엠넥스",code:"036170",why:"이익의 질 경고로 편입 부결. 영업이익 867,558,616원인데 영업활동현금흐름은 -137,523,121원(-15.9%). 매출채권 및 기타유동채권이 58,562,112,568원에서 69,689,112,808원으로 111억원(+19.0%) 증가했고 영업활동 자산·부채 변동이 -16.1억원으로 이익이 현금으로 전환되지 못했습니다. 외국인이 30영업일 중 25일 순매수하며 1,596,710주를 매집했고 52주 고점 대비 25%로 가장 눌려 있었으나, 수급만으로는 편입하지 않습니다."},
+   {name:"피델릭스",code:"032580",why:"이익의 질 주의로 편입 보류. 영업이익 4,331,943,526원에 영업활동현금흐름 869,919,205원(20.1%)으로 통과선 50%에 미달합니다. 다만 성격이 다릅니다 — 영업활동현금흐름 자체는 플러스이고 매출채권은 15,530,555,220원에서 14,091,940,201원으로 오히려 14억원 감소했습니다. 재고자산만 23,129,515,568원에서 31,905,903,768원으로 88억원 늘었는데, 같은 기간 매출이 10,879,557,541원에서 21,489,395,543원으로 97.5% 증가했으므로 성장에 앞선 재고 축적으로 읽힙니다. 매출채권과 재고가 동시에 부푸는 부실 패턴은 아니므로 경계종목으로 남기고 2분기 실적에서 재검증합니다."}
+  ]},
+ {date:"2026-08-02", title:"최초 구성 — 4축 교차검증 1회차",
+  summary:"코스피·코스닥 1,928종목을 2026년 1분기 실적 변곡으로 스크리닝해 285종목이 통과했고, 재무 필터로 177종목, 상위 44종목에 분기 궤적·수급·현금흐름 3개 축을 추가 검증해 7종목을 편입했습니다.",
+  added:[
+   {name:"링크제니시스",code:"219420",why:"분기 궤적 연속가속(4개 분기 연속 영업이익 증가) + 외국인 순매수 + OCF 318.9%. 3개 축 모두 최상위."},
+   {name:"티디에스팜",code:"464280",why:"개선전환 궤적에 외국인이 30일 중 22일 순매수. OCF 170.6%로 이익의 질 우수. 시가총액 25,300,000,000원으로 후보 중 최소."},
+   {name:"재영솔루텍",code:"049630",why:"연속가속 궤적 + 외국인 856,035주 순매수(최대) + OCF 113%. 52주 고점 대비 28%로 눌려 있음."},
+   {name:"영림원소프트랩",code:"060850",why:"4개 분기 연속 영업이익 증가에 이익률 단조 상승. OCF 80.4%로 기준선 충족. 소프트웨어라 변동성 낮음."},
+   {name:"미래아이앤지",code:"007120",why:"25Q1 적자 이후 4개 분기 연속 흑자, 이익률 20~34% 안착. OCF 170.8%. 수급 매수전환 신호."},
+   {name:"아이엠티",code:"451220",why:"4개 분기 연속 영업이익 증가. OCF 222.2%에 매출채권·재고 증가폭이 미미해 이익의 질이 깨끗함."},
+   {name:"지앤비에스 에코",code:"382800",why:"개선전환 궤적 + OCF 222.7% + 부채비율 25%. SK하이닉스 CAPEX 직결로 산업 사이클 근거가 후보 중 가장 명확."}
+  ],
+  removed:[
+   {name:"야스",code:"255440",why:"1차 후보였으나 현금흐름 축에서 탈락. 영업이익 5,179,399,981원 흑자전환인데 영업활동현금흐름은 -1,363,360,111원. 재고자산이 22,498,742,021원에서 31,310,744,603원으로 88억원 급증해 이익이 재고에 묶임."},
+   {name:"프로텍",code:"053610",why:"궤적은 4개 분기 연속 증가로 최상위였으나 영업이익 15,418,809,938원에 영업활동현금흐름 -11,433,473,292원. 매출채권 191억원, 재고 113억원 증가로 이익 전액이 운전자본에 묶임."},
+   {name:"라이온켐텍",code:"171120",why:"영업이익 4,189,221,314원 흑자인데 영업활동현금흐름 -4,978,836,216원. 매출채권이 한 분기에 48억원(+36%) 급증. 투자활동 유입으로 현금을 메운 구조."},
+   {name:"디바이스",code:"187870",why:"영업이익이 -7.8억→22억→133억→25.8억→122억으로 급등락 반복. 수주 인식 시점에 좌우돼 26Q1이 추세인지 판단 불가."},
+   {name:"영우디에스피",code:"143540",why:"연간 3년 연속 개선으로 실적은 가장 깨끗하나 외국인이 30영업일 중 25일 매도해 777,177주 순매도. 시장이 실적을 사지 않는 이유를 특정할 수 없어 보류."},
+   {name:"KX하이텍",code:"052900",why:"궤적이 등락반복(25Q2 적자, 25Q4 반토막)이고 OCF가 영업이익의 18%에 그침. eSSD 스토리는 유효하나 한 분기로 방향 판단 불가."},
+   {name:"쇼박스",code:"086980",why:"1분기 매출 +572%로 최상위였으나 2025년 4개 분기 모두 영업적자. 영화 「왕과 사는 남자」 흥행이라는 단발 이벤트."},
+   {name:"인피니트헬스케어",code:"071200",why:"외국인이 30일 중 25일 순매수했으나 OCF가 영업이익의 34.1%에 그침. 52주 고점 대비 82%로 진입 메리트도 낮아 보류."}
+  ]}
+];
+/* ============ CHANGELOG_END ============ */
+
+const S='mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__';
+const T={quote:S+'koreaStock-stock_get_quote',hist:S+'koreaStock-stock_get_price_history',
+ news:S+'koreaStock-market_get_news',kis:'mcp__kis__call-kis-api',nv:'mcp__naver-search__search_news'};
+const D={};[...WATCH,...BORDER].forEach(w=>D[w.code]={...w});
+
+const won=e=>e==null||isNaN(e)?'-':Math.round(e*1e8).toLocaleString('ko-KR')+'원';
+const wr=v=>v==null||isNaN(v)?'-':Math.round(v).toLocaleString('ko-KR')+'원';
+const sg=v=>v==null||isNaN(v)?'-':(v>0?'+':'')+Math.round(v).toLocaleString('ko-KR');
+const pct=v=>v==null||isNaN(v)?'-':(v>0?'+':'')+v.toFixed(2)+'%';
+const cls=v=>v==null?'':v>0?'up':v<0?'dn':'fl';
+const nv=c=>'https://finance.naver.com/item/main.naver?code='+c;
+const ymd=d=>d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+const esc=s=>String(s==null?'':s);
+
+async function call(tool,args){
+ const r=await window.cowork.callMcpTool(tool,args||{});
+ if(r.isError) throw new Error('tool');
+ let o=r.structuredContent;
+ if(!o){try{o=JSON.parse(r.content[0].text);}catch(e){throw new Error('parse');}}
+ if(o&&o.ok===false) throw new Error('api');
+ return o&&o.data!==undefined?o.data:o;
+}
+let steps=0,done=0;
+function prog(m){const p=steps?Math.round(done/steps*100):0;
+ document.getElementById('pb').style.width=p+'%';document.getElementById('pm').textContent=m;}
+
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+ t.classList.add('on');document.getElementById(t.dataset.p).classList.add('on');});
+
+const ALL=()=>[...WATCH,...BORDER];
+async function loadQuotes(){
+ for(const w of ALL()){
+  try{const q=await call(T.quote,{stock_code:w.code});
+   Object.assign(D[w.code],{price:q.price,chg:q.change_rate,mcap:q.market_cap,per:q.per,pbr:q.pbr,
+    hi:q.week52_high,lo:q.week52_low,sector:q.sector,vol:q.volume});
+  }catch(e){}
+  done++;prog('시세 '+w.name);}
+ render1();renderCards();renderB();
+}
+async function loadHist(){
+ const e=new Date(),s=new Date(Date.now()-70*864e5);
+ for(const w of ALL()){
+  try{const h=await call(T.hist,{stock_code:w.code,period:'D',start_date:ymd(s),end_date:ymd(e),limit:60});
+   D[w.code].rows=(h.rows||[]).slice().reverse();}catch(e){}
+  done++;prog('시세이력 '+w.name);}
+ render1();renderCards();renderB();
+}
+async function loadFlow(){
+ for(const w of ALL()){
+  try{const r=await call(T.kis,{group:'domestic_stock',api_type:'inquire_investor',
+    params:{fid_cond_mrkt_div_code:'J',fid_input_iscd:w.code}});
+   const o=(r&&r.output)||[];
+   const f=a=>a.reduce((s,x)=>s+(parseInt(x.frgn_ntby_qty)||0),0);
+   const g=a=>a.reduce((s,x)=>s+(parseInt(x.orgn_ntby_qty)||0),0);
+   Object.assign(D[w.code],{f30:f(o),o30:g(o),f5:f(o.slice(0,5)),o5:g(o.slice(0,5)),
+    fdays:o.filter(x=>(parseInt(x.frgn_ntby_qty)||0)>0).length,
+    flowRows:o.slice(0,20).map(x=>({d:x.stck_bsop_date,f:parseInt(x.frgn_ntby_qty)||0}))});
+  }catch(e){}
+  done++;prog('수급 '+w.name);}
+ render1();renderCards();renderB();
+}
+async function loadNews(){
+ for(const w of ALL()){
+  try{const n=await call(T.news,{stock_code:w.code,limit:8});D[w.code].kn=n.items||[];}catch(e){}
+  done++;prog('종목뉴스 '+w.name);
+  try{const n=await call(T.nv,{query:w.name,display:5,sort:'date'});D[w.code].nn=n.items||[];}catch(e){}
+  done++;prog('뉴스 '+w.name);
+  try{const n=await call(T.nv,{query:w.q,display:4,sort:'date'});D[w.code].tn=n.items||[];}catch(e){}
+  done++;prog('테마뉴스 '+w.name);}
+ renderNews();renderCards();renderB();
+}
+async function refreshAll(){
+ const b=document.getElementById('rf'),c=document.getElementById('rfq');
+ b.disabled=c.disabled=true;steps=ALL().length*6;done=0;
+ await loadQuotes();await loadHist();await loadFlow();await loadNews();
+ prog('완료 · '+new Date().toLocaleString('ko-KR'));
+ document.getElementById('asof').textContent='마지막 갱신 '+new Date().toLocaleString('ko-KR')+' · KIS 시세·수급 / DART / 네이버 뉴스';
+ b.disabled=c.disabled=false;
+}
+async function refreshQuick(){
+ const b=document.getElementById('rf'),c=document.getElementById('rfq');
+ b.disabled=c.disabled=true;steps=ALL().length;done=0;
+ await loadQuotes();prog('시세 갱신 완료 · '+new Date().toLocaleString('ko-KR'));
+ b.disabled=c.disabled=false;
+}
+document.getElementById('rf').onclick=refreshAll;
+document.getElementById('rfq').onclick=refreshQuick;
+
+const TC={'연속가속':'ok','개선전환':'ok','등락반복':'mid','단발스파이크':'bad'};
+const CC={'우수':'ok','양호':'ok','주의':'mid','경고':'bad','미검증':'neu'};
+const FC={'매수우위':'ok','매수전환':'blue','중립':'neu','매도우위':'bad'};
+let sk={k:'f30',asc:false};
+function render1(){
+ const rows=WATCH.map(w=>D[w.code]);
+ rows.forEach(d=>d.fromHi=(d.price&&d.hi)?d.price/d.hi*100:null);
+ rows.sort((a,b)=>{const x=a[sk.k],y=b[sk.k];
+  if(x==null)return 1;if(y==null)return -1;
+  return (sk.asc?1:-1)*(typeof x==='string'?String(x).localeCompare(String(y)):(x>y?1:x<y?-1:0));});
+ document.querySelector('#t1 tbody').innerHTML=rows.map(d=>`<tr>
+  <td class="l">${d.name}</td>
+  <td class="l"><a class="tk" href="${nv(d.code)}" target="_blank" rel="noopener">${d.code}</a></td>
+  <td class="num">${wr(d.price)}</td><td class="num ${cls(d.chg)}">${pct(d.chg)}</td>
+  <td class="num">${won(d.mcap)}</td>
+  <td class="num ${cls(d.f5)}">${sg(d.f5)}</td><td class="num ${cls(d.f30)}">${sg(d.f30)}</td>
+  <td class="num ${cls(d.o30)}">${sg(d.o30)}</td>
+  <td class="num">${d.fromHi==null?'-':d.fromHi.toFixed(0)+'%'}</td>
+  <td class="num">${d.per==null?'-':d.per}</td>
+  <td class="l"><span class="tag ${TC[d.traj]}">${d.traj}</span></td>
+  <td class="l"><span class="tag ${CC[d.cf]}">${d.cf} ${d.ocfr==null?'':d.ocfr+'%'}</span></td>
+  <td class="l" style="color:var(--ink2)">${d.theme}</td></tr>`).join('');
+ renderMinis();
+}
+document.querySelectorAll('#t1 th[data-k]').forEach(t=>t.onclick=()=>{
+ const k=t.dataset.k;sk={k,asc:sk.k===k?!sk.asc:false};render1();});
+
+function line(rows,w,h){
+ if(!rows||rows.length<2) return '<div class="empty">시세 이력 없음</div>';
+ const v=rows.map(r=>r.close),mn=Math.min(...v),mx=Math.max(...v),rg=(mx-mn)||1;
+ const pts=v.map((y,i)=>`${(i/(v.length-1)*(w-8)+4).toFixed(1)},${(h-6-(y-mn)/rg*(h-14)).toFixed(1)}`);
+ const c=v[v.length-1]>=v[0]?'var(--up)':'var(--dn)';
+ return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:${h}px;display:block">
+  <polyline fill="none" stroke="${c}" stroke-width="1.6" points="${pts.join(' ')}"/>
+  <polygon fill="${c}" opacity=".08" points="4,${h-4} ${pts.join(' ')} ${w-4},${h-4}"/></svg>`;
+}
+function renderMinis(){
+ document.getElementById('minis').innerHTML=WATCH.map(w=>{
+  const d=D[w.code],r=(d.rows||[]).slice(-20);
+  const f=r.length>1?(r[r.length-1].close/r[0].close-1)*100:null;
+  return `<div class="chartbox">
+   <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;margin-bottom:2px">
+    <b>${d.name}</b><span class="num ${cls(f)}">${f==null?'':(f>0?'+':'')+f.toFixed(1)+'%'}</span></div>
+   ${line(r,210,54)}
+   <div style="font-size:10.5px;color:var(--ink3);margin-top:2px" class="num">${wr(d.price)}</div></div>`;}).join('');
+}
+function bars(rows){
+ if(!rows||!rows.length) return '<div class="empty">수급 데이터 없음</div>';
+ const r=rows.slice().reverse(),mx=Math.max(...r.map(x=>Math.abs(x.f)))||1;
+ return `<div style="display:flex;align-items:center;gap:2px;height:52px">`+r.map(x=>{
+  const h=Math.abs(x.f)/mx*48;
+  return `<div style="flex:1;height:52px;display:flex;flex-direction:column;justify-content:center" title="${x.d} ${sg(x.f)}주">
+   <div style="height:26px;display:flex;align-items:flex-end"><div style="width:100%;height:${x.f>0?h/2:0}px;background:var(--g);border-radius:1px"></div></div>
+   <div style="height:26px"><div style="width:100%;height:${x.f<0?h/2:0}px;background:var(--r);border-radius:1px"></div></div></div>`;}).join('')+`</div>`;
+}
+function newsBlock(d){
+ const kn=d.kn||[],nn=d.nn||[];
+ return `<div class="two" style="margin-top:11px">
+  <div><div style="font-size:11.5px;color:var(--ink2);margin-bottom:3px">종목 뉴스·공시성 제목</div>
+   <ul class="nw">${kn.length?kn.slice(0,6).map(n=>`<li><span class="d">${(n.date||'').slice(4,6)}/${(n.date||'').slice(6,8)}</span><span>${esc(n.title)}</span></li>`).join(''):'<div class="empty">새로고침하면 불러옵니다</div>'}</ul></div>
+  <div><div style="font-size:11.5px;color:var(--ink2);margin-bottom:3px">네이버 뉴스</div>
+   <ul class="nw">${nn.length?nn.slice(0,5).map(n=>`<li><span class="d">${new Date(n.pubDate).toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})}</span><a href="${n.link}" target="_blank" rel="noopener">${esc(n.title).replace(/<[^>]+>/g,'')}</a></li>`).join(''):'<div class="empty">새로고침하면 불러옵니다</div>'}</ul></div></div>`;
+}
+function priceBlock(d){
+ return `<div class="two" style="margin-top:11px">
+  <div><div style="font-size:11.5px;color:var(--ink2);margin-bottom:3px">최근 60영업일 주가</div>
+   <div class="chartbox">${line(d.rows||[],420,120)}</div></div>
+  <div><div style="font-size:11.5px;color:var(--ink2);margin-bottom:3px">외국인 순매수 20영업일 (위=매수)</div>
+   <div class="chartbox">${bars(d.flowRows)}</div></div></div>`;
+}
+function kvBlock(d){
+ return `<div class="kv">
+  <div><span>현재가</span><span class="${cls(d.chg)}">${wr(d.price)} (${pct(d.chg)})</span></div>
+  <div><span>시가총액</span><span>${won(d.mcap)}</span></div>
+  <div><span>10배 도달 시</span><span>${won(d.mcap*10)}</span></div>
+  <div><span>52주 최고 / 최저</span><span>${wr(d.hi)} / ${wr(d.lo)}</span></div>
+  <div><span>PER / PBR</span><span>${d.per==null?'-':d.per} / ${d.pbr==null?'-':d.pbr}</span></div>
+  <div><span>거래량</span><span>${d.vol==null?'-':d.vol.toLocaleString('ko-KR')}주</span></div>
+  <div><span>외국인 30일</span><span class="${cls(d.f30)}">${sg(d.f30)}주</span></div>
+  <div><span>외국인 최근 5일</span><span class="${cls(d.f5)}">${sg(d.f5)}주</span></div>
+  <div><span>기관 30일</span><span class="${cls(d.o30)}">${sg(d.o30)}주</span></div>
+  <div><span>외국인 순매수일수</span><span>${d.fdays==null?'-':d.fdays+'/30'}</span></div>
+ </div>`;
+}
+function srcBlock(d){
+ if(!d.src||!d.src.length) return '';
+ return `<div class="srcs">출처 · ${d.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join('')}</div>`;
+}
+function renderCards(){
+ document.getElementById('cards').innerHTML=WATCH.map(w=>{
+  const d=D[w.code];
+  return `<div class="sc">
+   <div class="sch"><h3>${d.name}</h3>
+    <a class="tk" href="${nv(d.code)}" target="_blank" rel="noopener">${d.code}</a>
+    <span class="tag ${TC[d.traj]}">${d.traj}</span>
+    <span class="tag ${CC[d.cf]}">OCF ${d.ocfr}%</span>
+    <span class="tag blue">${d.theme}</span></div>
+   <div class="meta">${d.market} · ${d.est} · ${d.hq}</div>
+   ${kvBlock(d)}
+   ${priceBlock(d)}
+   <div class="sec"><h4>주력사업</h4><p>${d.biz}</p></div>
+   <div class="two">
+    <div class="sec"><h4>주요 제품·서비스</h4><ul>${d.products.map(p=>`<li>${p}</li>`).join('')}</ul></div>
+    <div>
+     <div class="sec"><h4>주요 고객</h4><p>${d.customers}</p></div>
+     <div class="sec"><h4>경쟁사</h4><p>${d.competitors}</p></div>
+     <div class="sec"><h4>최대주주</h4><p>${d.shareholder}</p></div>
+    </div>
+   </div>
+   <div class="sec"><h4>전방산업</h4><p>${d.industry}</p></div>
+   <div class="sec"><h4>최근 이슈</h4><ul>${d.issues.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+   ${newsBlock(d)}
+   <div class="note g"><b>투자 포인트 ·</b> ${d.point}</div>
+   <div class="note r"><b>리스크 ·</b> ${d.risk}</div>
+   <div class="note t"><b>재검증 트리거 ·</b> ${d.trigger}</div>
+   ${srcBlock(d)}
+  </div>`;}).join('');
+}
+function renderB(){
+ document.getElementById('bcards').innerHTML=BORDER.map(w=>{
+  const d=D[w.code];
+  return `<div class="sc b">
+   <div class="sch"><h3>${d.name}</h3>
+    <a class="tk" href="${nv(d.code)}" target="_blank" rel="noopener">${d.code}</a>
+    <span class="tag mid">경계</span>
+    <span class="tag ${TC[d.traj]}">${d.traj}</span>
+    <span class="tag ${FC[d.flow]}">${d.flow}</span>
+    <span class="tag ${CC[d.cf]}">현금흐름 ${d.cf}${d.ocfr==null?'':' '+d.ocfr+'%'}</span>
+    <span class="tag blue">${d.theme}</span></div>
+   <div class="meta">${d.market}</div>
+   ${kvBlock(d)}
+   ${priceBlock(d)}
+   <div class="sec"><h4>주력사업</h4><p>${d.biz}</p></div>
+   <div class="two">
+    <div class="sec"><h4>주요 제품·서비스</h4><ul>${d.products.map(p=>`<li>${p}</li>`).join('')}</ul></div>
+    <div>
+     <div class="sec"><h4>주요 고객</h4><p>${d.customers}</p></div>
+     <div class="sec"><h4>전방산업</h4><p>${d.industry}</p></div>
+     <div class="sec"><h4>최대주주</h4><p>${d.shareholder}</p></div>
+    </div>
+   </div>
+   <div class="sec"><h4>최근 이슈</h4><ul>${d.issues.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+   ${newsBlock(d)}
+   <div class="note r"><b>왜 아직 편입하지 않았는가 ·</b> ${d.why}</div>
+   <div class="note t"><b>편입 조건 ·</b> ${d.cond}<br><b style="display:inline-block;margin-top:5px">확인 시점 ·</b> ${d.when}</div>
+   ${srcBlock(d)}
+  </div>`;}).join('');
+}
+function renderNews(){
+ document.getElementById('thnews').innerHTML=ALL().map(w=>{
+  const t=D[w.code].tn||[];
+  return `<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;margin-bottom:3px">
+   ${D[w.code].theme} <span style="color:var(--ink3);font-weight:400">· ${w.name}</span></div>
+   <ul class="nw">${t.length?t.map(n=>`<li><span class="d">${new Date(n.pubDate).toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})}</span>
+    <a href="${n.link}" target="_blank" rel="noopener">${esc(n.title).replace(/<[^>]+>/g,'')}</a></li>`).join(''):'<div class="empty">새로고침하면 불러옵니다</div>'}</ul></div>`;}).join('');
+ document.getElementById('stnews').innerHTML=ALL().map(w=>{
+  const k=D[w.code].kn||[];
+  return `<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;margin-bottom:3px">${w.name}
+   <a class="tk" href="${nv(w.code)}" target="_blank" rel="noopener">${w.code}</a></div>
+   <ul class="nw">${k.length?k.map(n=>`<li><span class="d">${(n.date||'').slice(4,6)}/${(n.date||'').slice(6,8)} ${(n.time||'').slice(0,2)}:${(n.time||'').slice(2,4)}</span><span>${esc(n.title)}</span></li>`).join(''):'<div class="empty">새로고침하면 불러옵니다</div>'}</ul></div>`;}).join('');
+}
+function renderChg(){
+ document.getElementById('chg').innerHTML=CHANGELOG.map(c=>`<div class="chg">
+  <div class="dt">${c.date}</div><h3>${c.title}</h3>
+  <div style="font-size:12px;color:var(--ink2);margin-bottom:6px">${c.summary}</div>
+  ${(c.added||[]).map(a=>`<div class="chgi add"><b><span class="tag ok">편입</span> ${a.name}</b>
+   <a class="tk" href="${nv(a.code)}" target="_blank" rel="noopener">${a.code}</a>
+   <div style="margin-top:4px;color:var(--ink2)">${a.why}</div></div>`).join('')}
+  ${(c.removed||[]).map(a=>`<div class="chgi rm"><b><span class="tag bad">제외</span> ${a.name}</b>
+   <a class="tk" href="${nv(a.code)}" target="_blank" rel="noopener">${a.code}</a>
+   <div style="margin-top:4px;color:var(--ink2)">${a.why}</div></div>`).join('')}
+  ${(c.notes||[]).length?`<div class="chgi" style="border-left:3px solid var(--a)"><b><span class="tag blue">점검 메모</span></b>
+   <ul style="margin:5px 0 0;padding-left:17px;color:var(--ink2)">${c.notes.map(n=>`<li>${n}</li>`).join('')}</ul></div>`:''}
+  ${!(c.added||[]).length&&!(c.removed||[]).length?`<div class="chgi" style="border-left:3px solid var(--line)"><b>편입·제외 없음</b> — 워치리스트 변동 없이 유지</div>`:''}</div>`).join('');
+}
+function renderBasis(){
+ document.getElementById('basis').innerHTML=WATCH.map(w=>`<tr>
+  <td class="l">${w.name} <a class="tk" href="${nv(w.code)}" target="_blank" rel="noopener">${w.code}</a></td>
+  <td class="l"><span class="tag ${TC[w.traj]}">${w.traj}</span></td>
+  <td class="l"><span class="tag ${FC[w.flow]}">${w.flow}</span></td>
+  <td class="num">${w.ocfr}%</td><td class="num">${won(w.mcapIn)}</td>
+  <td class="l" style="color:var(--ink2);white-space:normal">${w.shareholder}</td></tr>`).join('');
+}
+render1();renderCards();renderB();renderNews();renderChg();renderBasis();
+refreshAll();
+</script></body></html>
