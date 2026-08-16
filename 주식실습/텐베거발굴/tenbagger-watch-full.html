@@ -9,14 +9,14 @@
     "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__koreaStock-stock_get_price_history",
     "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__koreaStock-market_get_news",
     "mcp__kis__call-kis-api",
-    "mcp__naver-search__search_news"
+    "mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__NaverSearch-search_news"
   ],
   "mcpServerNames": [
     "PlayMCP",
     "PlayMCP",
     "PlayMCP",
     "kis",
-    "naver-search"
+    "PlayMCP"
   ]
 }
 </script>
@@ -225,7 +225,7 @@ const CHANGELOG = [
 
 const S='mcp__b68f9e48-afcd-44fc-b9e2-15b50d00b660__';
 const T={quote:S+'koreaStock-stock_get_quote',hist:S+'koreaStock-stock_get_price_history',
- news:S+'koreaStock-market_get_news',kis:'mcp__kis__call-kis-api',nv:'mcp__naver-search__search_news'};
+ news:S+'koreaStock-market_get_news',kis:'mcp__kis__call-kis-api',nv:S+'NaverSearch-search_news'};
 const D={};[...WATCH,...BORDER].forEach(w=>D[w.code]={...w});
 
 const won=e=>e==null||isNaN(e)?'-':Math.round(e*1e8).toLocaleString('ko-KR')+'원';
