@@ -1,0 +1,505 @@
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Kospi200 Movers",
+  "schemaVersion": 1,
+  "description": "KOSPI 200 등락 보드. 지수 요약(KOSPI·KOSPI200·KOSDAQ), 일간 상승/하락 TOP10, 기간별(주간 5거래일·월간 20거래일) 상승/하락 TOP10. 종목코드·종목명 클릭 시 네이버 금융으로 연결. 출처 한국투자증권 KIS Open API.",
+  "mcpTools": [
+    "mcp__kis__call-kis-api"
+  ],
+  "mcpServerNames": [
+    "kis"
+  ]
+}
+</script>
+<meta charset="utf-8">
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body, .kb-root {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo",
+                 "Malgun Gothic", "Noto Sans KR", Roboto, sans-serif;
+    color: #1a1a1a;
+    background: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* 초광폭 모니터에서 표가 무한정 늘어나지 않도록 보드 전체 폭을 고정 */
+  .kb-root { max-width: 1400px; }
+  .kb-card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 16px;
+    padding: 16px 18px 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+    margin-bottom: 12px;
+  }
+  .kb-title {
+    display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
+    font-size: 17px; font-weight: 700; margin: 0 0 4px;
+  }
+  .kb-sub { font-size: 12.5px; font-weight: 400; color: #8a8a8a; }
+  .kb-btn {
+    margin: 12px 0 4px;
+    background: #16171a; color: #fff; border: 0;
+    border-radius: 9px; padding: 9px 15px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: inherit;
+    transition: opacity .15s;
+  }
+  .kb-btn:hover { opacity: .85; }
+  .kb-btn:disabled { opacity: .5; cursor: default; }
+  .kb-spin {
+    width: 12px; height: 12px; border: 2px solid rgba(255,255,255,.35);
+    border-top-color: #fff; border-radius: 50%;
+    animation: kbspin .7s linear infinite; display: none;
+  }
+  .kb-btn.loading .kb-spin { display: inline-block; }
+  @keyframes kbspin { to { transform: rotate(360deg); } }
+
+  .kb-idx {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 200px));
+    gap: 8px; margin: 10px 0 2px;
+  }
+  .kb-idx-cell { border: 1px solid #ededed; border-radius: 10px; padding: 8px 10px; background: #fcfcfc; }
+  .kb-idx-name { font-size: 11px; color: #8a8a8a; font-weight: 600; }
+  .kb-idx-val { font-size: 17px; font-weight: 700; margin-top: 2px; letter-spacing: -.01em; }
+  .kb-idx-chg { font-size: 12px; font-weight: 600; margin-top: 1px; }
+  .kb-idx-br { font-size: 10.5px; color: #a0a0a0; margin-top: 3px; }
+
+  /* 좌: 주간 / 우: 월간 — 윗줄 상승, 아랫줄 하락 */
+  .kb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px 20px; margin-top: 14px; }
+  /* 상승 블록과 하락 블록 사이 구분선 */
+  .kb-sep { border-top: 1px solid #eeeeee; padding-top: 32px; }
+  .kb-panel-h { font-size: 13.5px; font-weight: 700; margin: 6px 0 5px; display: flex; align-items: baseline; gap: 5px; }
+  .kb-panel-h .hint { font-size: 10.5px; font-weight: 500; color: #a8a8a8; }
+  .up { color: #d92d20; }
+  .down { color: #1d63d1; }
+  .flat { color: #6b6b6b; }
+
+  /* 표는 열 폭을 꽉 채워 좌우 패널의 폭이 정확히 일치하도록 한다.
+     전체 사방 벌어짐은 .kb-root 의 max-width 로 제어. */
+  table.kb-t { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  table.kb-t td { padding: 3.5px 0; border-bottom: 1px solid #f4f4f4; vertical-align: middle; }
+  table.kb-t tr:last-child td { border-bottom: 0; }
+  .c-rank { width: 16px; color: #b5b5b5; font-size: 11px; }
+  .c-code { width: 58px; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .c-name { font-size: 12.5px; color: #3f3f3f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .c-badge { width: 74px; white-space: nowrap; text-align: right; padding-right: 6px; overflow: hidden; }
+  .c-pct { width: 58px; text-align: right; font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .c-prc { font-size: 10px; color: #a8a8a8; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.25; }
+  .badge {
+    display: inline-block; font-size: 10px; padding: 1.5px 6px; max-width: 100%;
+    border-radius: 5px; background: #f2f4f8; color: #5a6478; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle;
+  }
+  a.tk { color: #16171a; text-decoration: none; border-bottom: 1px dotted #c9c9c9; }
+  a.tk:hover { color: #1d63d1; border-bottom-color: #1d63d1; }
+  a.nm { color: #3f3f3f; text-decoration: none; }
+  a.nm:hover { color: #1d63d1; text-decoration: underline; }
+
+  .kb-foot { margin-top: 14px; padding-top: 10px; border-top: 1px solid #f0f0f0; font-size: 11px; color: #9a9a9a; line-height: 1.6; }
+  .kb-err { margin-top: 10px; padding: 8px 11px; border-radius: 9px; background: #fff5f5; border: 1px solid #ffd7d7; color: #b42318; font-size: 12px; display: none; }
+  .kb-skel { color: #c4c4c4; font-size: 12px; padding: 8px 0; }
+  .kb-btn { margin: 10px 0 2px; padding: 7px 13px; font-size: 12.5px; }
+  .kb-title { font-size: 16px; }
+  @media (max-width: 760px) {
+    .kb-grid { grid-template-columns: 1fr; gap: 2px; }
+    .kb-idx { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="kb-root">
+
+  <!-- ===== 카드 1: 일간 등락 ===== -->
+  <div class="kb-card">
+    <div class="kb-title">
+      <span>📊 KOSPI 200 등락 상위</span>
+      <span class="kb-sub" id="kbMeta">불러오는 중…</span>
+    </div>
+
+    <button class="kb-btn" id="kbRefresh">
+      <span class="kb-spin"></span><span id="kbBtnTxt">🔄 등락 데이터 새로고침</span>
+    </button>
+
+    <div class="kb-err" id="kbErr"></div>
+
+    <div class="kb-idx" id="kbIdx"></div>
+
+    <div class="kb-grid">
+      <div>
+        <div class="kb-panel-h up">▲ KOSPI200 상승 TOP10</div>
+        <div id="kbStkUp"><div class="kb-skel">불러오는 중…</div></div>
+      </div>
+      <div>
+        <div class="kb-panel-h down">▼ KOSPI200 하락 TOP10</div>
+        <div id="kbStkDn"><div class="kb-skel">불러오는 중…</div></div>
+      </div>
+    </div>
+
+    <div class="kb-foot">
+      후보군은 <b>KOSPI 200 구성종목 200개</b>로 한정합니다(KIS 등락률 순위 API <code>fid_input_iscd=2001</code>).
+      색상은 국내 HTS 관행에 따라 <span class="up" style="font-weight:700">상승=적색</span>,
+      <span class="down" style="font-weight:700">하락=청색</span>입니다.
+      <b>종목코드·종목명을 클릭하면 네이버 금융 종목 페이지가 새 탭으로 열립니다.</b>
+      모든 수치는 <b>한국투자증권 KIS Open API</b> 기준이며, 매매 전 증권사 공식 시세로 확인하세요. 투자 추천이 아닙니다.
+    </div>
+  </div>
+
+  <!-- ===== 카드 2: 기간별 상승률 ===== -->
+  <div class="kb-card">
+    <div class="kb-title">
+      <span>📈 기간별 등락률 TOP10</span>
+      <span class="kb-sub">— 최근 1주일·1개월 상승/하락 상위 · KOSPI 200 한정 · 출처 한국투자증권 KIS</span>
+    </div>
+
+    <div class="kb-grid" style="margin-top:8px">
+      <div>
+        <div class="kb-panel-h up">▲ 주간 상승 TOP10 <span class="hint">5거래일</span></div>
+        <div id="kbWk"><div class="kb-skel">불러오는 중…</div></div>
+      </div>
+      <div>
+        <div class="kb-panel-h up">▲ 월간 상승 TOP10 <span class="hint">20거래일</span></div>
+        <div id="kbMo"><div class="kb-skel">불러오는 중…</div></div>
+      </div>
+      <div class="kb-sep">
+        <div class="kb-panel-h down">▼ 주간 하락 TOP10 <span class="hint">5거래일</span></div>
+        <div id="kbWkDn"><div class="kb-skel">불러오는 중…</div></div>
+      </div>
+      <div class="kb-sep">
+        <div class="kb-panel-h down">▼ 월간 하락 TOP10 <span class="hint">20거래일</span></div>
+        <div id="kbMoDn"><div class="kb-skel">불러오는 중…</div></div>
+      </div>
+    </div>
+
+    <div class="kb-foot">
+      %는 해당 기간(5거래일 / 20거래일) <b>전 종가 대비 현재가 수익률</b>입니다
+      (KIS <code>dsgt_date_clpr_vrss_prpr_rate</code> 기준, 달력 기준이 아닌 거래일 기준).
+      위 카드의 <b>등락 데이터 새로고침</b> 시 함께 갱신됩니다.
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var TOOL = "mcp__kis__call-kis-api";
+  var LS_KEY = "kb_kospi200_movers_v2";
+  var NAVER = "https://finance.naver.com/item/main.naver?code=";
+
+  /* ---------- KOSPI200 섹터 매핑 (종목코드 기준) ---------- */
+  var SEC = {
+    "005930":"기술","000660":"기술","009150":"기술","011070":"기술","042700":"기술",
+    "000990":"기술","402340":"기술","307950":"기술","064400":"기술","007660":"기술",
+    "018260":"기술","034220":"기술","006400":"기술","240810":"기술","178920":"기술",
+    "058470":"기술","039030":"기술","272210":"기술","092220":"기술",
+    "035420":"커뮤니케이션","035720":"커뮤니케이션","259960":"커뮤니케이션","036570":"커뮤니케이션",
+    "030200":"커뮤니케이션","017670":"커뮤니케이션","032640":"커뮤니케이션","251270":"커뮤니케이션",
+    "130960":"커뮤니케이션","034120":"커뮤니케이션","079160":"커뮤니케이션","263750":"커뮤니케이션",
+    "005380":"임의소비재","000270":"임의소비재","012330":"임의소비재","161390":"임의소비재",
+    "066570":"임의소비재","004170":"임의소비재","069960":"임의소비재","023530":"임의소비재",
+    "090430":"임의소비재","002790":"임의소비재","051900":"임의소비재","008770":"임의소비재",
+    "139480":"임의소비재","018880":"임의소비재","011210":"임의소비재","204320":"임의소비재",
+    "111770":"임의소비재","009970":"임의소비재","073240":"임의소비재","057050":"임의소비재",
+    "192820":"임의소비재","161890":"임의소비재","009240":"임의소비재","483650":"임의소비재",
+    "278470":"임의소비재","081660":"임의소비재",
+    "180640":"산업재","005940":"금융",
+    "097950":"필수소비재","001680":"필수소비재","003230":"필수소비재","282330":"필수소비재",
+    "007310":"필수소비재","004370":"필수소비재","271560":"필수소비재","033780":"필수소비재",
+    "000080":"필수소비재","006040":"필수소비재","005300":"필수소비재","280360":"필수소비재",
+    "004990":"필수소비재","001040":"필수소비재","007070":"필수소비재",
+    "207940":"헬스케어","068270":"헬스케어","000100":"헬스케어","069620":"헬스케어",
+    "003090":"헬스케어","302440":"헬스케어","128940":"헬스케어","185750":"헬스케어",
+    "326030":"헬스케어","006280":"헬스케어","170900":"헬스케어","214450":"헬스케어",
+    "009420":"헬스케어","145720":"헬스케어","0126Z0":"헬스케어","008930":"헬스케어",
+    "105560":"금융","055550":"금융","086790":"금융","316140":"금융","138040":"금융",
+    "175330":"금융","138930":"금융","139130":"금융","001450":"금융","000810":"금융",
+    "088350":"금융","005830":"금융","006800":"금융","016360":"금융","003540":"금융",
+    "071050":"금융","039490":"금융","029780":"금융","024110":"금융","032830":"금융",
+    "012450":"산업재","079550":"산업재","042660":"산업재","009540":"산업재","010140":"산업재",
+    "267250":"산업재","267260":"산업재","267270":"산업재","010120":"산업재","241560":"산업재",
+    "454910":"산업재","034020":"산업재","000150":"산업재","028050":"산업재","047040":"산업재",
+    "000720":"산업재","006360":"산업재","375500":"산업재","011200":"산업재","003490":"산업재",
+    "012750":"산업재","052690":"산업재","051600":"산업재","001440":"산업재","062040":"산업재",
+    "298040":"산업재","064350":"산업재","005090":"산업재","017800":"산업재","000210":"산업재",
+    "210980":"산업재","071970":"산업재","086280":"산업재","000120":"산업재","006260":"산업재",
+    "005490":"소재","010130":"소재","103140":"소재","003670":"소재","066970":"소재",
+    "450080":"소재","011790":"소재","093370":"소재","456040":"소재","010060":"소재",
+    "001230":"소재","004020":"소재","014820":"소재","002030":"소재","268280":"소재",
+    "011170":"소재","051910":"소재","285130":"소재","000880":"소재","120110":"소재",
+    "002380":"소재","014680":"소재","004000":"소재","006650":"소재","001570":"소재",
+    "298020":"소재","003030":"소재","001430":"소재","009830":"소재","047050":"소재",
+    "096770":"에너지","010950":"에너지","078930":"에너지","112610":"에너지",
+    "015760":"유틸리티","036460":"유틸리티","071320":"유틸리티",
+    "003550":"지주","034730":"지주","016880":"지주"
+  };
+
+  var KEY_RULES = [
+    [/제약|바이오|헬스|메디|팜|녹십자|종근당|셀트리온|한미약품|사이언스/, "헬스케어"],
+    [/은행|금융|증권|보험|캐피탈|카드|화재|생명|손해/, "금융"],
+    [/전자|반도체|디스플레이|테크|소프트|IT|시스템|SDS|정보통신/, "기술"],
+    [/건설|중공업|조선|엔지니어링|기계|항공|우주|방산|로템|E&C|이앤씨|글로비스|대한통운/, "산업재"],
+    [/화학|소재|철강|금속|비철|알미|알루미|시멘트|유리|섬유|제강|베스틸/, "소재"],
+    [/에너지|정유|가스|오일|석유/, "에너지"],
+    [/전력|한전|수도/, "유틸리티"],
+    [/식품|제당|음료|주류|유통|백화점|마트|리테일|편의점|담배/, "필수소비재"],
+    [/자동차|타이어|모비스|호텔|레저|의류|화장품|패션|콜마|코스맥스/, "임의소비재"],
+    [/텔레콤|통신|미디어|게임|엔터|방송|컨텐츠|콘텐츠/, "커뮤니케이션"],
+    [/홀딩스|지주/, "지주"]
+  ];
+
+  function sectorOf(code, name) {
+    if (SEC[code]) return SEC[code];
+    for (var i = 0; i < KEY_RULES.length; i++) {
+      if (KEY_RULES[i][0].test(name || "")) return KEY_RULES[i][1];
+    }
+    return "기타";
+  }
+
+  /* ---------- helpers ---------- */
+  function won(n) { return (Math.round(Number(n) || 0)).toLocaleString("ko-KR") + "원"; }
+  function pctTxt(v) { var n = Number(v) || 0; return (n > 0 ? "+" : "") + n.toFixed(2) + "%"; }
+  function cls(v) { var n = Number(v) || 0; return n > 0 ? "up" : (n < 0 ? "down" : "flat"); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function fmtDate(d) { return (!d || d.length !== 8) ? "" : d.slice(0,4)+"-"+d.slice(4,6)+"-"+d.slice(6,8); }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function isRateLimit(s) { return /EGW00201|초당|rate.?limit|too many/i.test(String(s || "")); }
+
+  function textOf(r) {
+    if (!r) return "";
+    if (r.content && r.content.length) {
+      return r.content.map(function (c) { return c && c.text ? c.text : ""; }).join("\n");
+    }
+    return "";
+  }
+
+  async function rawCall(args) {
+    try {
+      var r = await window.cowork.callMcpTool(TOOL, args);
+      return r || { isError: true, content: [{ text: "빈 응답" }] };
+    } catch (e) {
+      return { isError: true, content: [{ text: String((e && e.message) || e) }] };
+    }
+  }
+
+  async function callKisOnce(group, apiType, params) {
+    var base = { group: group, api_type: apiType, allow_extra_params: true };
+    var variants = [
+      Object.assign({}, base, { params: params }),
+      Object.assign({}, base, { params: JSON.stringify(params) })
+    ];
+    var last = "";
+    for (var i = 0; i < variants.length; i++) {
+      var r = await rawCall(variants[i]);
+      var txt = textOf(r);
+      if (r.isError) {
+        last = txt || "알 수 없는 오류";
+        if (isRateLimit(last)) { var e1 = new Error("RATE_LIMIT"); e1.rateLimit = true; throw e1; }
+        continue;
+      }
+      var payload = r.structuredContent;
+      if (!payload) {
+        try { payload = JSON.parse(txt); }
+        catch (e) { last = "응답 파싱 실패: " + txt.slice(0, 200); continue; }
+      }
+      if (payload.rt_cd && payload.rt_cd !== "0") {
+        if (isRateLimit(payload.msg_cd + " " + payload.msg1)) {
+          var e2 = new Error("RATE_LIMIT"); e2.rateLimit = true; throw e2;
+        }
+        throw new Error(apiType + " → [" + payload.msg_cd + "] " + (payload.msg1 || ""));
+      }
+      return payload;
+    }
+    throw new Error(apiType + " 실패: " + String(last).slice(0, 400));
+  }
+
+  // KIS 초당 호출 한도 대응: 지수 백오프 재시도
+  async function callKis(group, apiType, params) {
+    var waits = [0, 700, 1400, 2400];
+    for (var a = 0; a < waits.length; a++) {
+      if (waits[a]) await sleep(waits[a]);
+      try {
+        return await callKisOnce(group, apiType, params);
+      } catch (e) {
+        if (!e.rateLimit || a === waits.length - 1) {
+          if (e.rateLimit) throw new Error(apiType + ": KIS 초당 호출 한도 초과 (재시도 실패)");
+          throw e;
+        }
+      }
+    }
+  }
+
+  // sort: "0"=상승률순, "1"=하락률순 / days: "0"=전일대비, "5"=5거래일, "20"=20거래일
+  function rankParams(sort, days) {
+    return {
+      fid_cond_mrkt_div_code: "J",
+      fid_cond_scr_div_code: "20170",
+      fid_input_iscd: "2001",
+      fid_rank_sort_cls_code: sort,
+      fid_input_cnt_1: days,
+      fid_prc_cls_code: "1",
+      fid_input_price_1: "",
+      fid_input_price_2: "",
+      fid_vol_cnt: "",
+      fid_trgt_cls_code: "0000000000",
+      fid_trgt_exls_cls_code: "0000000000",
+      fid_div_cls_code: "0",
+      fid_rsfl_rate1: "",
+      fid_rsfl_rate2: ""
+    };
+  }
+
+  /* ---------- fetch (KIS 초당 한도 → 순차 호출) ---------- */
+  var CALL_GAP_MS = 320;
+
+  async function fetchAll() {
+    var jobs = [
+      ["stkUp",  "fluctuation",         rankParams("0", "0")],
+      ["stkDn",  "fluctuation",         rankParams("1", "0")],
+      ["wk",     "fluctuation",         rankParams("0", "5")],
+      ["wkDn",   "fluctuation",         rankParams("1", "5")],
+      ["mo",     "fluctuation",         rankParams("0", "20")],
+      ["moDn",   "fluctuation",         rankParams("1", "20")],
+      ["kospi",  "inquire_index_price", { fid_cond_mrkt_div_code: "U", fid_input_iscd: "0001" }],
+      ["k200",   "inquire_index_price", { fid_cond_mrkt_div_code: "U", fid_input_iscd: "2001" }],
+      ["kosdaq", "inquire_index_price", { fid_cond_mrkt_div_code: "U", fid_input_iscd: "1001" }]
+    ];
+
+    var out = {}, errs = [];
+    for (var i = 0; i < jobs.length; i++) {
+      if (i) await sleep(CALL_GAP_MS);
+      try { out[jobs[i][0]] = await callKis("domestic_stock", jobs[i][1], jobs[i][2]); }
+      catch (e) { out[jobs[i][0]] = {}; errs.push(String((e && e.message) || e)); }
+    }
+    if (errs.length === jobs.length) throw new Error(errs[0]);
+
+    var idxSrc = [["KOSPI", out.kospi], ["KOSPI 200", out.k200], ["KOSDAQ", out.kosdaq]];
+    var indices = idxSrc.map(function (p) {
+      var o = (p[1] && p[1].output) || {};
+      return {
+        name: p[0],
+        val: Number(o.bstp_nmix_prpr) || 0,
+        chg: Number(o.bstp_nmix_prdy_vrss) || 0,
+        pct: Number(o.bstp_nmix_prdy_ctrt) || 0,
+        up: Number(o.ascn_issu_cnt) || 0,
+        dn: Number(o.down_issu_cnt) || 0,
+        fl: Number(o.stnr_issu_cnt) || 0
+      };
+    });
+
+    // usePeriod=true 이면 지정일 종가 대비 수익률을 표시
+    function mapStk(r, usePeriod) {
+      return ((r && r.output) || []).map(function (o) {
+        return {
+          code: o.stck_shrn_iscd,
+          name: o.hts_kor_isnm,
+          pct: Number(usePeriod ? o.dsgt_date_clpr_vrss_prpr_rate : o.prdy_ctrt) || 0,
+          price: Number(o.stck_prpr) || 0,
+          badge: sectorOf(o.stck_shrn_iscd, o.hts_kor_isnm),
+          date: o.acml_hgpr_date || ""
+        };
+      });
+    }
+
+    var stkUp = mapStk(out.stkUp, false).slice(0, 10);
+    return {
+      indices: indices,
+      stkUp: stkUp,
+      stkDn: mapStk(out.stkDn, false).slice(0, 10),
+      wk: mapStk(out.wk, true).slice(0, 10),
+      wkDn: mapStk(out.wkDn, true).slice(0, 10),
+      mo: mapStk(out.mo, true).slice(0, 10),
+      moDn: mapStk(out.moDn, true).slice(0, 10),
+      baseDate: (stkUp[0] && stkUp[0].date) || "",
+      fetchedAt: Date.now(),
+      errs: errs
+    };
+  }
+
+  /* ---------- render ---------- */
+  function rowsHtml(list) {
+    if (!list || !list.length) return '<div class="kb-skel">데이터 없음</div>';
+    var h = '<table class="kb-t">';
+    list.forEach(function (r, i) {
+      var url = NAVER + encodeURIComponent(r.code);
+      var a = ' target="_blank" rel="noopener noreferrer" title="네이버 금융에서 ' + esc(r.name) + ' 열기"';
+      h += '<tr>' +
+        '<td class="c-rank">' + (i + 1) + '</td>' +
+        '<td class="c-code"><a class="tk" href="' + url + '"' + a + '>' + esc(r.code) + '</a></td>' +
+        '<td class="c-name"><a class="nm" href="' + url + '"' + a + '>' + esc(r.name) + '</a>' +
+          '<div class="c-prc">' + won(r.price) + '</div></td>' +
+        '<td class="c-badge"><span class="badge">' + esc(r.badge) + '</span></td>' +
+        '<td class="c-pct ' + cls(r.pct) + '">' + pctTxt(r.pct) + '</td>' +
+        '</tr>';
+    });
+    return h + '</table>';
+  }
+
+  function idxHtml(indices) {
+    return indices.map(function (x) {
+      return '<div class="kb-idx-cell">' +
+        '<div class="kb-idx-name">' + esc(x.name) + '</div>' +
+        '<div class="kb-idx-val">' + x.val.toLocaleString("ko-KR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</div>' +
+        '<div class="kb-idx-chg ' + cls(x.pct) + '">' + (x.chg > 0 ? "+" : "") + x.chg.toFixed(2) + ' (' + pctTxt(x.pct) + ')</div>' +
+        '<div class="kb-idx-br">상승 ' + x.up + ' · 보합 ' + x.fl + ' · 하락 ' + x.dn + '</div>' +
+        '</div>';
+    }).join("");
+  }
+
+  function render(d, stale) {
+    document.getElementById("kbIdx").innerHTML = idxHtml(d.indices || []);
+    document.getElementById("kbStkUp").innerHTML = rowsHtml(d.stkUp);
+    document.getElementById("kbStkDn").innerHTML = rowsHtml(d.stkDn);
+    document.getElementById("kbWk").innerHTML = rowsHtml(d.wk);
+    document.getElementById("kbWkDn").innerHTML = rowsHtml(d.wkDn);
+    document.getElementById("kbMo").innerHTML = rowsHtml(d.mo);
+    document.getElementById("kbMoDn").innerHTML = rowsHtml(d.moDn);
+
+    var when = new Date(d.fetchedAt).toLocaleString("ko-KR", { dateStyle: "medium", timeStyle: "medium" });
+    document.getElementById("kbMeta").textContent =
+      "— " + (stale ? "저장된 데이터" : "갱신") + " (" + when + ") · 기준일 " +
+      (fmtDate(d.baseDate) || "-") + " · 출처 한국투자증권 KIS Open API";
+  }
+
+  function showErr(msg) {
+    var el = document.getElementById("kbErr");
+    el.textContent = "⚠ " + msg;
+    el.style.display = "block";
+  }
+
+  /* ---------- boot: 캐시 즉시 표시 → 백그라운드 갱신 ---------- */
+  var btn = document.getElementById("kbRefresh");
+  var btnTxt = document.getElementById("kbBtnTxt");
+
+  try {
+    var cached = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+    if (cached && cached.stkUp) render(cached, true);
+  } catch (e) {}
+
+  async function refresh() {
+    btn.classList.add("loading");
+    btn.disabled = true;
+    btnTxt.textContent = "불러오는 중…";
+    document.getElementById("kbErr").style.display = "none";
+    try {
+      var d = await fetchAll();
+      render(d, false);
+      if (d.errs && d.errs.length) showErr("일부 데이터 미수신 — " + d.errs.join(" | "));
+      try { localStorage.setItem(LS_KEY, JSON.stringify(d)); } catch (e) {}
+    } catch (e) {
+      showErr(String((e && e.message) || e) + " — 잠시 후 다시 시도하세요.");
+    } finally {
+      btn.classList.remove("loading");
+      btn.disabled = false;
+      btnTxt.textContent = "🔄 등락 데이터 새로고침";
+    }
+  }
+
+  btn.addEventListener("click", refresh);
+  refresh();
+})();
+</script>
