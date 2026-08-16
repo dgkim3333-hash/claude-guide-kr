@@ -264,8 +264,8 @@ Cowork은 Claude가 **내 컴퓨터의 파일을 직접 만들고 고치는 곳*
 
 | 파일 | 내용 |
 |---|---|
-| [stock-first-check.skill](stock-first-check.skill) | 주식 종목 1차 점검 |
-| [mcp-health-check.skill](mcp-health-check.skill) | MCP 자가진단 |
+| [stock-first-check.skill](스킬/stock-first-check.skill) | 주식 종목 1차 점검 |
+| [mcp-health-check.skill](스킬/mcp-health-check.skill) | MCP 자가진단 |
 
 설치는 파일을 **채팅창에 끌어다 놓고 저장 버튼**을 누르면 됩니다. 새 대화부터 적용됩니다.
 
