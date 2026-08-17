@@ -245,7 +245,7 @@ Cowork은 Claude가 **내 컴퓨터의 파일을 직접 만들고 고치는 곳*
 
 | 파일 | 내용 |
 |---|---|
-| [claude-guide-kr.plugin](claude-guide-kr.plugin) | 스킬 8개를 한 번에. 채팅창에 끌어다 놓고 저장 |
+| [claude-guide-kr.plugin](claude-guide-kr.plugin) | 스킬 8개를 한 번에. **유료 플랜(Pro 이상)만 가능합니다** |
 
 들어 있는 스킬
 
@@ -267,7 +267,7 @@ Cowork은 Claude가 **내 컴퓨터의 파일을 직접 만들고 고치는 곳*
 | [stock-first-check.skill](스킬/stock-first-check.skill) | 주식 종목 1차 점검 |
 | [mcp-health-check.skill](스킬/mcp-health-check.skill) | MCP 자가진단 |
 
-설치는 파일을 **채팅창에 끌어다 놓고 저장 버튼**을 누르면 됩니다. 새 대화부터 적용됩니다.
+**`.plugin` 넣는 법** — `설정` → `사용자 지정` → `플러그인` → 우측 상단 `추가` → `플러그인 업로드`  **`.skill` 넣는 법** — `설정` → `사용자 지정` → `스킬` → 우측 상단 `추가` → `스킬 업로드`  둘 다 **새 대화부터** 적용됩니다. 먼저 `설정` → `기능` 에서 「코드 실행 및 파일 생성」을 켜 두세요.  > **플러그인은 유료 플랜(Pro · Max · Team · Enterprise)에서만 됩니다.** 무료 계정이면 위의 `.plugin` 한 번에 설치가 안 되니, 스킬을 하나씩 넣는 쪽으로 가세요. > 출처: support.claude.com/en/articles/13837440 (2026-08-17 확인)
 
 > 스킬은 Claude 에게 새로운 행동을 지시하는 것입니다. 신뢰할 수 있는 출처의 것만 설치하세요.
 > 부동산·주식 스킬은 자료를 정리하고 위험을 드러낼 뿐, 투자를 권유하지 않습니다.
