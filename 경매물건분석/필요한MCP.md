@@ -9,10 +9,10 @@ MCP(Model Context Protocol)는 Claude가 바깥 자료를 직접 가져오게 �
 
 ## 미리 만들 폴더
 
-소스를 받아 두는 곳입니다. **C 드라이브 바로 아래에** 만드십시오.
+소스를 받아 두는 곳입니다. **`C:\AI` 폴더 안에 `mcp` 폴더를** 만드십시오.
 
 ```
-C:\mcp\
+C:\AI\mcp\
 ```
 
 수강생 전원이 같은 경로를 써야 **설정 파일을 그대로 복사해 쓸 수 있습니다.**
@@ -52,12 +52,12 @@ C:\mcp\
 공개 저장소입니다 — https://github.com/tae0y/real-estate-mcp
 
 **받는 법** — 위 주소에서 초록색 `Code` 버튼 → `Download ZIP` → 압축을 풀어
-`C:\mcp\real-estate-mcp\` 으로 이름을 맞춥니다.
+`C:\AI\mcp\real-estate-mcp\` 으로 이름을 맞춥니다.
 
 ```json
 "real-estate": {
   "command": "uv",
-  "args": ["run", "--directory", "C:\\mcp\\real-estate-mcp", "python", "src/real_estate/mcp_server/server.py"],
+  "args": ["run", "--directory", "C:\\AI\\mcp\\real-estate-mcp", "python", "src/real_estate/mcp_server/server.py"],
   "env": { "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1" }
 }
 ```
@@ -74,12 +74,12 @@ C:\mcp\
 | 주의 | **설치가 가장 까다롭습니다.** 수업 시간에 같이 합니다 |
 
 설치 순서는 교재와 `claude_desktop_config_실습용.jsonc` 를 따릅니다.
-소스는 `C:\mcp\datagokr-mcp\` 에 둡니다.
+소스는 `C:\AI\mcp\datagokr-mcp\` 에 둡니다.
 
 ```json
 "datagokr": {
   "command": "uv",
-  "args": ["--directory", "C:\\mcp\\datagokr-mcp", "run", "python", "server.py"],
+  "args": ["--directory", "C:\\AI\\mcp\\datagokr-mcp", "run", "python", "server.py"],
   "env": {
     "DATA_GO_KR_SERVICE_KEY": "공공데이터포털_인증키",
     "PYTHONIOENCODING": "utf-8",
@@ -97,12 +97,12 @@ C:\mcp\
 | 붙이면 | **개별공시지가** · 용도지역 · 토지이용계획을 주소만으로 |
 
 이 저장소에 들어 있습니다 — [경매물건분석/mcp/vworld-landuse-mcp](mcp/vworld-landuse-mcp)
-그 폴더를 `C:\mcp\vworld-landuse-mcp\` 로 복사하고, 안에 들어 있는 README를 따릅니다.
+그 폴더를 `C:\AI\mcp\vworld-landuse-mcp\` 로 복사하고, 안에 들어 있는 README를 따릅니다.
 
 ```json
 "vworld-landuse": {
   "command": "uv",
-  "args": ["run", "--directory", "C:\\mcp\\vworld-landuse-mcp", "python", "vworld_landuse_mcp.py"],
+  "args": ["run", "--directory", "C:\\AI\\mcp\\vworld-landuse-mcp", "python", "vworld_landuse_mcp.py"],
   "env": {
     "VWORLD_API_KEY": "발급받은_브이월드_키",
     "PYTHONIOENCODING": "utf-8",
