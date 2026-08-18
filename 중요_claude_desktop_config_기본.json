@@ -59,7 +59,7 @@
       "args": [
         "run",
         "--directory",
-        "C:\\mcp\\real-estate-mcp",
+        "C:\\AI\\mcp\\real-estate-mcp",
         "python",
         "src/real_estate/mcp_server/server.py"
       ],
@@ -73,7 +73,7 @@
       "command": "uv",
       "args": [
         "--directory",
-        "C:\\mcp\\datagokr-mcp",
+        "C:\\AI\\mcp\\datagokr-mcp",
         "run",
         "python",
         "server.py"
@@ -90,7 +90,7 @@
       "args": [
         "run",
         "--directory",
-        "C:\\mcp\\vworld-landuse-mcp",
+        "C:\\AI\\mcp\\vworld-landuse-mcp",
         "python",
         "vworld_landuse_mcp.py"
       ],
