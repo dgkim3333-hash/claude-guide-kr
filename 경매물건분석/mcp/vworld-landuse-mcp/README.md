@@ -35,7 +35,7 @@
 이 폴더를 통째로 아래 위치에 둡니다.
 
 ```
-C:\mcp\vworld-landuse-mcp\
+C:\AI\mcp\vworld-landuse-mcp\
 ```
 
 ---
@@ -47,7 +47,7 @@ C:\mcp\vworld-landuse-mcp\
 ```json
 "vworld-landuse": {
   "command": "uv",
-  "args": ["run", "--directory", "C:\\mcp\\vworld-landuse-mcp", "python", "vworld_landuse_mcp.py"],
+  "args": ["run", "--directory", "C:\\AI\\mcp\\vworld-landuse-mcp", "python", "vworld_landuse_mcp.py"],
   "env": {
     "VWORLD_API_KEY": "여기에_발급받은_키",
     "PYTHONIOENCODING": "utf-8",
