@@ -223,7 +223,7 @@
     //   ★ 로컬 설치 경로 입력 필요 ★
     //   이 MCP 는 npx/uvx 로 자동 설치되지 않습니다.
     //   소스를 내 PC 에 먼저 내려받은 뒤, 그 폴더 경로를 아래 --directory 에
-    //   이 교육에서는 C:\mcp\datagokr-mcp 에 두기로 통일했습니다.
+    //   이 교육에서는 C:\AI\mcp\datagokr-mcp 에 두기로 통일했습니다.
     //   경로는 역슬래시 두 개(\\)로 적어야 합니다.
     //   필요조건 : uv/uvx  +  Python
     //
@@ -239,7 +239,7 @@
       "command": "uv",
       "args": [
         "--directory",
-        "C:\\mcp\\datagokr-mcp",
+        "C:\\AI\\mcp\\datagokr-mcp",
         "run",
         "python",
         "server.py"
@@ -258,13 +258,13 @@
     // =========================================================================
     //  경매 물건 분석용 4종  ―  아래 네 개가 경매 프로젝트의 준비물입니다
     //
-    //  소스가 필요한 것은 전부 C:\mcp 아래에 둡니다. 전원이 같은 경로를 쓰면
+    //  소스가 필요한 것은 전부 C:\AI\mcp 아래에 둡니다. 전원이 같은 경로를 쓰면
     //  이 파일을 그대로 복사해 쓸 수 있습니다. 다른 곳에 두면 경로를 일일이
     //  고쳐야 합니다.
     //
-    //      C:\mcp\datagokr-mcp
-    //      C:\mcp\real-estate-mcp
-    //      C:\mcp\vworld-landuse-mcp
+    //      C:\AI\mcp\datagokr-mcp
+    //      C:\AI\mcp\real-estate-mcp
+    //      C:\AI\mcp\vworld-landuse-mcp
     //
     //  korean-law 는 폴더가 필요 없습니다. npx 가 알아서 받아 실행합니다.
     // =========================================================================
@@ -299,7 +299,7 @@
     //   ★ 로컬 설치 경로 필요 ★
     //   받는 곳 : https://github.com/tae0y/real-estate-mcp
     //             초록색 Code 버튼 → Download ZIP → 압축 해제
-    //             폴더 이름을 real-estate-mcp 로 맞춰 C:\mcp 아래 둡니다.
+    //             폴더 이름을 real-estate-mcp 로 맞춰 C:\AI\mcp 아래 둡니다.
     //   필요조건 : uv  +  Python
     //
     //   ★ API 키 입력 필요 ★
@@ -315,7 +315,7 @@
       "args": [
         "run",
         "--directory",
-        "C:\\mcp\\real-estate-mcp",
+        "C:\\AI\\mcp\\real-estate-mcp",
         "python",
         "src/real_estate/mcp_server/server.py"
       ],
@@ -334,7 +334,7 @@
     //   ★ 로컬 설치 경로 필요 ★
     //   받는 곳 : https://github.com/dgkim3333-hash/claude-guide-kr
     //             → 경매물건분석/mcp/vworld-landuse-mcp 폴더
-    //             그 폴더를 C:\mcp\vworld-landuse-mcp 로 복사합니다.
+    //             그 폴더를 C:\AI\mcp\vworld-landuse-mcp 로 복사합니다.
     //   필요조건 : uv  +  Python
     //
     //   ★ 인증키 입력 필요 ★
@@ -355,7 +355,7 @@
       "args": [
         "run",
         "--directory",
-        "C:\\mcp\\vworld-landuse-mcp",
+        "C:\\AI\\mcp\\vworld-landuse-mcp",
         "python",
         "vworld_landuse_mcp.py"
       ],
@@ -373,7 +373,7 @@
     //
     //   ★ 로컬 설치 경로 입력 필요 ★
     //   이 MCP 도 자동 설치되지 않습니다. 소스를 내 PC 에 먼저 내려받고
-    //   그 폴더 경로를 아래 --directory 에 적으세요. (예: C:\mcp\KIS_MCP_Server)
+    //   그 폴더 경로를 아래 --directory 에 적으세요. (예: C:\AI\mcp\KIS_MCP_Server)
     //   필요조건 : uv/uvx  +  Python
     //
     //   ★ API 키 입력 필요 ★
