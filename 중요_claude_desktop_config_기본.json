@@ -120,20 +120,6 @@
         "PYTHONIOENCODING": "utf-8",
         "PYTHONUTF8": "1"
       }
-    },
-    "github": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "GITHUB_PERSONAL_ACCESS_TOKEN",
-        "ghcr.io/github/github-mcp-server"
-      ],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "<<여기에_GitHub_개인액세스토큰_입력>>"
-      }
     }
   }
 }
