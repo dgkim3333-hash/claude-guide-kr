@@ -99,6 +99,41 @@
         "PYTHONIOENCODING": "utf-8",
         "PYTHONUTF8": "1"
       }
+    },
+    "kis": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "C:\\AI\\mcp\\kis-mcp-server",
+        "python",
+        "server.py"
+      ],
+      "env": {
+        "KIS_APP_KEY": "<<여기에_KIS_APP_KEY_입력>>",
+        "KIS_APP_SECRET": "<<여기에_KIS_APP_SECRET_입력>>",
+        "KIS_CANO": "<<여기에_계좌번호_앞8자리_입력>>",
+        "KIS_ACNT_PRDT_CD": "01",
+        "KIS_ACCOUNT_TYPE": "VIRTUAL",
+        "KIS_MCP_TOOLSET": "catalog",
+        "KIS_MCP_LOG_LEVEL": "WARNING",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1"
+      }
+    },
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<<여기에_GitHub_개인액세스토큰_입력>>"
+      }
     }
   }
 }
