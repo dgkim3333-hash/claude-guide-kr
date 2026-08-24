@@ -623,7 +623,7 @@ writing-plans · writing-skills
 
 | 문서 | 내용 |
 |---|---|
-| ★ [중요_claude_desktop_config_기본.json](중요_claude_desktop_config_기본.json) | **MCP 12개.** 여기부터 시작하세요 |
+| ★ [중요_claude_desktop_config_기본.json](중요_claude_desktop_config_기본.json) | **MCP 13개.** 여기부터 시작하세요 |
 | [claude_desktop_config_실습용.jsonc](claude_desktop_config_실습용.jsonc) | 설명이 잔뜩 달린 확장판. 키 발급처와 주의사항 포함 |
 
 **넣는 법은 위 「여는 법과 저장하는 법」 ③ 을 그대로 따르세요.**
@@ -635,12 +635,34 @@ writing-plans · writing-skills
 |---|---|---|
 | **바로 되는 것 (7개)** | youtube · youtube-transcript · context7 · sequential-thinking · playwright · hwp-read · word | **없음.** 붙여넣고 재시작하면 끝 |
 | **키만 있으면 되는 것 (2개)** | firecrawl · korean-law | 인증키. **폴더는 필요 없습니다** |
-| **키 + 폴더가 필요한 것 (3개)** | real-estate · datagokr · vworld-landuse | 인증키 + `C:\AI\mcp` 폴더 |
+| **키 + 폴더가 필요한 것 (4개)** | real-estate · datagokr · vworld-landuse · **kis** | 인증키 + `C:\AI\mcp` 폴더 |
 
-**키가 없는 상태로 붙여넣으면 그 5개는 붉은 오류가 납니다.** 고장이 아닙니다.
+**키가 없는 상태로 붙여넣으면 그 6개는 붉은 오류가 납니다.** 고장이 아닙니다.
 나머지 7개는 정상 작동합니다. 아직 준비가 안 됐으면 **그 블록들은 지우고 쓰셔도 됩니다.**
 
 준비 방법은 [경매물건분석/필요한MCP.md](경매물건분석/필요한MCP.md) 에 있습니다.
+
+> ### `kis` 는 주식 트랙만 해당됩니다
+>
+> 한국투자증권 시세를 가져오는 서버입니다. **경매만 하실 분은 이 블록을 통째로 지우세요.**
+>
+> 준비물이 셋입니다.
+>
+> | 무엇 | 어디서 |
+> |---|---|
+> | KIS MCP 소스 | 내려받아 `C:\AI\mcp\kis-mcp-server` 에 둡니다. 다른 폴더면 `--directory` 값을 고치세요 |
+> | 앱키 · 시크릿 | `apiportal.koreainvestment.com` — **승인에 1~2일** 걸립니다 |
+> | 계좌번호 앞 8자리 | `KIS_CANO` 칸 |
+>
+> **`KIS_ACCOUNT_TYPE` 이 `VIRTUAL`(모의투자)로 되어 있습니다.** 처음에는 그대로 두세요.
+> 실계좌(`REAL`)로 바꾸면 진짜 주문이 나갑니다.
+
+> ### GitHub 은 이 파일에 없습니다 — 커넥터로 붙이세요
+>
+> GitHub 도 MCP 로 붙일 수 있지만, 설정 파일에 넣으려면 **Docker** 가 필요합니다.
+> 다른 13개는 `npx`·`uv` 로 도는데 그것만 무겁습니다.
+>
+> **`설정` → `커넥터` 에서 붙이는 쪽이 훨씬 간단합니다.** 로그인만 하면 되고 설정 파일을 건드리지 않습니다.
 
 ## 인증키는 네 가지입니다
 
