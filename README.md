@@ -481,13 +481,30 @@ claude-guide-kr-main\claude-guide-kr.plugin
 
 ## 하나씩 설치하고 싶다면
 
+**여덟 개 전부 `.skill` 파일로도 올려두었습니다.** 무료 계정이라 플러그인이 안 되시면 이쪽으로 하나씩 넣으시면 됩니다.
+
 | 파일 | 내용 |
 |---|---|
-| [stock-first-check.skill](스킬/stock-first-check.skill) | 주식 종목 1차 점검 |
-| [mcp-health-check.skill](스킬/mcp-health-check.skill) | MCP 자가진단 |
+| [number-format-guard.skill](스킬/number-format-guard.skill) | 금액 쓸 때 원 단위 콤마 강제 |
+| [mcp-health-check.skill](스킬/mcp-health-check.skill) | MCP 가 안 붙을 때 진단 |
+| [artifact-safe-update.skill](스킬/artifact-safe-update.skill) | Cowork 대시보드 안전 갱신 |
+| [residential-auction.skill](스킬/residential-auction.skill) | 아파트·다가구·다세대 경매 분석 |
+| [property-location-scan.skill](스킬/property-location-scan.skill) | 주소로 입지·상권·규제 조사 |
+| [onbid-api-caller.skill](스킬/onbid-api-caller.skill) | 온비드 공매 조회 규칙 |
+| [real-estate-tax-calculator.skill](스킬/real-estate-tax-calculator.skill) | 취득세·양도세 산정 |
+| [stock-first-check.skill](스킬/stock-first-check.skill) | 종목 퇴출위험·재무·희석·수급 점검 |
 
-> **`.skill` 파일은 지금 2개뿐입니다.** 나머지 6개는 `.plugin` 안에만 들어 있습니다.
-> 무료 계정이라 플러그인을 못 쓰시면 **여덟 개 중 둘만** 넣을 수 있습니다.
+**여덟 개를 다 넣을 필요는 없습니다.** 본인이 쓸 것만 고르세요.
+주식만 하실 분은 `stock-first-check` 하나, 경매만 하실 분은 `residential-auction`·`property-location-scan` 정도면 충분합니다.
+`number-format-guard` 와 `mcp-health-check` 두 개는 분야와 상관없이 쓸모가 있습니다.
+
+> ### ★ `.skill` 파일은 열어보지 마세요
+>
+> 압축 파일입니다. 메모장이나 VS Code 로 열면 **「파일이 이진이거나 지원되지 않는 텍스트 인코딩」** 이라고만 나옵니다.
+> **고장이 아닙니다.** 받은 그대로 업로드하시면 됩니다.
+>
+> 굳이 안을 보시려면 확장자를 `.zip` 으로 바꿔 압축을 풀면 `SKILL.md` 가 나옵니다.
+> 다만 **다시 `.skill` 로 돌려놓아야** 업로드가 됩니다.
 
 **`.plugin` 넣는 법** — `설정` → `사용자 지정` → `플러그인` → 우측 상단 `추가` → `플러그인 업로드`  
 
