@@ -528,6 +528,9 @@ claude-guide-kr-main\claude-guide-kr.plugin
 Claude 에는 **「Knowledge Work」 마켓플레이스가 처음부터 붙어 있습니다.**
 그 밖의 것은 직접 추가해야 하고, **GitHub 저장소 주소만 있으면 추가할 수 있습니다.**
 
+**아래에 두 군데를 보여드립니다.** 넣는 방법은 **완전히 똑같고, 주소만 다릅니다.**
+그것이 이 절에서 익히실 전부입니다.
+
 ### Superpowers — Anthropic 공식 목록에 올라 있는 스킬 묶음
 
 Jesse Vincent 가 만든 **개발 방법론 스킬 묶음**입니다.
@@ -600,6 +603,47 @@ writing-plans · writing-skills
 > 처음부터 붙어 있는 「Knowledge Work」 도 같은 방법으로 지울 수 있습니다.
 > > 화면 확인: 2026-08-25 직접 설치해 확인 (검색 미노출 · `+` → 「마켓플레이스 추가」 → `동기화` · 스킬 14개)
 > > 등재 확인: github.com/anthropics/claude-plugins-official `.claude-plugin/marketplace.json` (2026-08-25 조회, 플러그인 286개 중 등재)
+
+### Anthropic 이 직접 공개한 묶음 — `anthropics/skills`
+
+Anthropic 이 자기 저장소에 **예제 스킬을 통째로 공개**해 두었습니다.
+넣는 법은 위 Superpowers 와 **똑같습니다. 주소만 바꾸면 됩니다.**
+
+```
+anthropics/skills
+```
+
+`동기화` 를 누르면 **묶음 다섯 개**가 목록에 뜹니다. 전부 넣지 마시고 **필요한 것만 `설치`** 하세요.
+
+| 묶음 | 들어 있는 것 |
+|---|---|
+| `document-skills` | xlsx · docx · pptx · pdf — 문서를 만들고 읽는 것들 |
+| **`example-skills`** | **skill-creator** · mcp-builder · canvas-design · frontend-design · web-artifacts-builder · webapp-testing · algorithmic-art · brand-guidelines · doc-coauthoring · internal-comms · slack-gif-creator · theme-factory |
+| `claude-api` | Claude API·SDK 문서를 참고해 프로그램을 만들 때 |
+| `academy-guide` | Claude 사용법을 물으면 관련 강좌를 추천해 줍니다 |
+| `discernment-nudge` | 답변 뒤에 「이건 확인해 보셨나요」 하는 질문을 붙여줍니다 |
+
+#### `skill-creator` — 스킬을 만들어주는 스킬
+
+`example-skills` 안에 들어 있습니다. **스킬을 직접 만들어 보고 싶을 때** 쓰는 도구입니다.
+
+| 해주는 것 | 무슨 뜻인가 |
+|---|---|
+| 이름과 설명을 잡아줍니다 | 스킬이 **언제 켜질지**를 정하는 게 설명(description)입니다. 여기가 부실하면 만들어도 안 켜집니다 |
+| 폴더 구조를 만들어 줍니다 | `SKILL.md` · `references/` · `scripts/` 를 규격에 맞게 |
+| **시험(eval)을 돌려줍니다** | 만든 스킬이 **실제로 켜지는지** 테스트 문장을 여러 개 넣어보고 결과를 보여줍니다 |
+
+> **오늘 실습에는 쓰지 않습니다.** 스킬을 「받아 쓰는 것」과 「만드는 것」은 다른 이야기이고,
+> 이 교육은 받아 쓰는 데까지입니다. **관심 있는 분만** 나중에 열어 보세요.
+
+> ### 목록에 이미 있을 수도 있습니다
+>
+> `설정` → `사용자 지정` → `스킬` 에 `skill-creator` 가 **이미 보이면 따로 받지 않으셔도 됩니다.**
+> Claude 가 기본으로 넣어주는 경우가 있습니다. 강사 PC 에는 2026-08-25 자동으로 들어와 있었습니다.
+
+> **이건 Anthropic 이 직접 만든 것입니다.** 그래도 마켓플레이스로 받는 것이라
+> 빨간 경고문은 Superpowers 와 똑같이 뜹니다. 놀라지 마세요.
+> > 확인: github.com/anthropics/skills `.claude-plugin/marketplace.json` (2026-08-25 직접 조회 — 묶음 5개 · `example-skills` 안에 `skill-creator`)
 
 ---
 
