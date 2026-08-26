@@ -1,0 +1,87 @@
+{
+  "_읽어주세요": [
+    "이 파일은 경매 물건 분석에 쓰는 MCP 만 담은 원본입니다.",
+    "이미 claude_desktop_config.json 을 쓰고 계시면, mcpServers 안의 블록만 복사해 넣으십시오.",
+    "<...> 로 감싼 곳에 본인 인증키를 넣습니다. 꺾쇠는 지웁니다.",
+    "real-estate · datagokr · vworld-landuse 는 C:\\AI\\mcp 아래에 소스가 있어야 합니다.",
+    "소스를 받는 법과 키 발급처는 필요한MCP.md 를 보십시오.",
+    "KakaoMap 은 이 파일이 아니라 설정 > 커넥터 에서 붙입니다.",
+    "이 파일을 키가 든 채로 공유하거나 캡처해 올리지 마십시오.",
+    "저장 위치: 일반 설치는 %APPDATA%\\Claude\\claude_desktop_config.json,",
+    "Microsoft Store 버전은 %LOCALAPPDATA%\\Packages\\Claude_<고유문자열>\\LocalCache\\Roaming\\Claude\\claude_desktop_config.json",
+    "고친 뒤에는 Claude 를 완전히 종료했다가 다시 켭니다."
+  ],
+
+  "mcpServers": {
+
+    "korean-law": {
+      "command": "npx",
+      "args": ["-y", "korean-law-mcp"],
+      "env": {
+        "LAW_OC": "<본인 OC 값 — open.law.go.kr 이메일 아이디>"
+      }
+    },
+
+    "real-estate": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "C:\\AI\\mcp\\real-estate-mcp",
+        "python",
+        "src/real_estate/mcp_server/server.py"
+      ],
+      "env": {
+        "DATA_GO_KR_SERVICE_KEY": "<본인 공공데이터포털 키>",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1"
+      }
+    },
+
+    "datagokr": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\AI\\mcp\\datagokr-mcp",
+        "run",
+        "python",
+        "server.py"
+      ],
+      "env": {
+        "DATA_GO_KR_SERVICE_KEY": "<본인 공공데이터포털 키 — real-estate 와 같은 값>",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1"
+      }
+    },
+
+    "vworld-landuse": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "C:\\AI\\mcp\\vworld-landuse-mcp",
+        "python",
+        "vworld_landuse_mcp.py"
+      ],
+      "env": {
+        "VWORLD_API_KEY": "<본인 브이월드 키>",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1"
+      }
+    }
+
+  },
+
+  "_KakaoMap_안내": [
+    "KakaoMap 은 설정 파일이 아니라 Claude 커넥터 목록에서 추가합니다.",
+    "설정 > 커넥터 > 커넥터 둘러보기 > KakaoMap > 연결 > 카카오 로그인.",
+    "지하철역 검색과 도보 경로 실측(STEP 5-B)에 필수입니다.",
+    "커넥터는 유료 플랜에서만 제공됩니다."
+  ],
+
+  "_선택_2개_안내": [
+    "duckdb — 호별 실제 공시가격 조회. 없으면 감정평가액 x 60% 가정으로 진행합니다.",
+    "powerpoint — 열린 PPTX 잠금 해제. PowerPoint 를 직접 닫아도 됩니다.",
+    "둘 다 없어도 분석은 끝까지 돕니다. 설치 명령은 각 저장소 안내를 따르십시오."
+  ]
+}
