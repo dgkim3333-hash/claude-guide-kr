@@ -162,11 +162,11 @@ def waterfall(total, steps, title, sub=None, w=1000):
     o.append(f'<rect x="{BARX}" y="{y}" width="{BARW}" height="26" rx="4" fill="{C["blue"]}"/>')
     o.append(txt(28, y+18, "총액", 13, C["ink"], "bold"))
     # ★ 막대 안쪽 흰 글씨. 막대 밖에 두면 겹쳐 읽히지 않는다 (2026-08-27 실측 결함)
-    o.append(txt(BARX+BARW-12, y+18, won(bid), 13, "#FFFFFF", "bold", "end"))
+    o.append(txt(BARX+BARW-12, y+18, won(total), 13, "#FFFFFF", "bold", "end"))
     y += 44
     for s in live:
         amt = min(s["amount"], rem)
-        bw = max(2, BARW * (amt / bid if bid else 0))
+        bw = max(2, BARW * (amt / total if total else 0))
         o.append(txt(28, y+18, s["name"], 13, C["slate"]))
         o.append(f'<rect x="{BARX}" y="{y}" width="{BARW}" height="26" rx="4" fill="#E8EAEE"/>')
         o.append(f'<rect x="{BARX}" y="{y}" width="{bw:.1f}" height="26" rx="4" '
@@ -286,4 +286,3 @@ assert 잔여 == 그림에_찍힌_값, "검산 실패"
 |---|---|
 | 2026-08-27 | **폰트 결함 수정 + 가드 신설.** 첫 실전 테스트에서 한글이 전부 □ 로 렌더됐다. 원인은 `font-family` 첫 항목 `Pretendard` 가 샌드박스에 없어 cairosvg 가 폴백하지 않은 것. `Noto Sans CJK KR` 을 앞으로 옮기고 `fc-list` 기반 가드를 넣었다(변이 검증 통과). 아울러 「잔여 ≠ 기대치」·「미확인 값 라벨」 규칙을 추가 |
 | 2026-08-27 | 신설. 3종 도표를 실제로 만들어 PNG 렌더까지 확인했다. 첫 판에서 발견한 결함 2개(총액 금액 겹침·0 항목 행)를 생성기에 반영했다. 폭포 차트 합계 검산 통과 |
-
