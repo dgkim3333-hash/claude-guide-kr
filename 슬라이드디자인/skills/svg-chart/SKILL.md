@@ -102,7 +102,7 @@ def txt(x, y, s, size=13, fill=None, weight="normal", anchor="start"):
     return (f'<text x="{x}" y="{y}" font-size="{size}" fill="{fill or C["ink"]}" '
             f'font-weight="{weight}" text-anchor="{anchor}">{esc(s)}</text>')
 
-# ── 1. 계층 사다리 ────────────────────────────
+# ── 1. 계층 사다리 ──────────────────────────────
 def ladder(items, title, sub=None, w=1000):
     """items: [{date, kind, holder, amount, fate}]  fate = 강조 / 보통 / 기준"""
     ROW, TOP = 46, 92
@@ -130,7 +130,7 @@ def ladder(items, title, sub=None, w=1000):
     o.append("</svg>")
     return "\n".join(o)
 
-# ── 2. 타임라인 ─────────────────────────────
+# ── 2. 타임라인 ────────────────────────────────
 def timeline(events, title, sub=None, w=1000):
     """events: [{date, what, read, level}]  level = 위험 / 주의 / 보통"""
     h = 150 + 74 * len(events)
@@ -150,7 +150,7 @@ def timeline(events, title, sub=None, w=1000):
     o.append("</svg>")
     return "\n".join(o)
 
-# ── 3. 폭포 차트 ───────────────────────────────
+# ── 3. 폭포 차트 ───────────────────────────────────
 def waterfall(total, steps, title, sub=None, w=1000):
     """steps: [{name, amount, color?}] — 차감 순서대로. 0 항목은 자동 제외"""
     live = [x for x in steps if x["amount"] > 0]
@@ -237,7 +237,7 @@ assert 잔여 == 그림에_찍힌_값, "검산 실패"
 
 그림의 숫자와 원 데이터의 숫자가 **한 원이라도 다르면** 그림을 고치지 말고 **원 데이터를 다시 본다.**
 
-**마지막 항목은 「받을 몲」이 아니라 「남은 몲」이다.** 기대치보다 크게 나오면 그림이 과대평가한 것이다.
+**마지막 항목은 「받을 몫」이 아니라 「남은 몫」이다.** 기대치보다 크게 나오면 그림이 과대평가한 것이다.
 기대치와 나란히 적고 **부족분**을 함께 낸다.
 
 ```python
@@ -267,7 +267,7 @@ assert 잔여 == 그림에_찍힌_값, "검산 실패"
 - **좌표를 임의로 바꾸기** — 실측으로 맞춘 값이다. 바꾸려면 다시 렌더해 확인한다
 - **금액을 억·만으로 축약하기** — `won()` 만 쓴다
 - **폭포 차트 합계를 검산 없이 쓰기**
-- **마지막 `잔여` 를 기대치처럼 읽기** — 남은 몲이다. 부족분을 함께 낸다
+- **마지막 `잔여` 를 기대치처럼 읽기** — 남은 몫이다. 부족분을 함께 낸다
 - **0원 항목을 그리기** — 생성기가 자동 제외한다. 우회하지 않는다
 - **확인 못 한 값을 라벨 없이 그리기**
 - 외부 스크립트·zip을 받아 쓰기 — 이 문서가 전부다
