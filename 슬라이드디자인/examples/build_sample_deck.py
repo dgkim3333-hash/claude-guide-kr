@@ -21,9 +21,9 @@ from pptx.chart.data import CategoryChartData
 from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
 import copy, os
 
-# ────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # brand.config.md 와 1:1로 대응한다. 브랜드를 바꾸면 여기만 고친다.
-# ────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 BRAND = dict(
     name            = "MyBrand",
     font            = "Pretendard",
@@ -58,9 +58,9 @@ def kpi_widths(n):
     4장 → 2.93",  3장 → 3.98"  (design-system.md §5 패턴 A와 같은 값)"""
     return round((CONTENT_W - GUTTER * (n - 1)) / n, 2)
 
-# ────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # 도우미
-# ────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 def textbox(slide, x, y, w, h, text, size, bold=False, color=None,
             align=PP_ALIGN.LEFT, line=1.3, anchor=MSO_ANCHOR.TOP):
     tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
@@ -131,7 +131,7 @@ def won(n):
     """금액은 통화 최소 단위 + 세 자리 콤마. 만/억/조로 줄이지 않는다."""
     return f"{n:,}원"
 
-# ────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 prs = Presentation()
 prs.slide_width  = Inches(13.333)
 prs.slide_height = Inches(7.5)
@@ -197,7 +197,7 @@ for i, (t1, body) in enumerate([
     ("규격이 정하는 것",
      "· 다섯 존의 Y 좌표\n· 서체 하나와 굵기 척도\n· 브랜드 색과 그라디언트 예산\n· 12열 그리드와 거터"),
     ("그때그때 정하는 것",
-     "· 본문 상자 안의 구성\n· 어떤 차트를 쓸 것인가\n· 카드 몇 장으로 나될 것인가\n· 무엇을 강조할 것인가")]):
+     "· 본문 상자 안의 구성\n· 어떤 차트를 쓸 것인가\n· 카드 몇 장으로 나눌 것인가\n· 무엇을 강조할 것인가")]):
     x = ZONE["margin"] + i * (colw + 0.4)
     textbox(s, x, ZONE["body_top"], colw, 0.4, t1, 18, bold=True)
     textbox(s, x, ZONE["body_top"] + 0.55, colw, 2.0, body, 13,
