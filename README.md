@@ -811,7 +811,7 @@ anthropics/skills
 | `academy-guide` | Claude 사용법을 물으면 관련 강좌를 추천해 줍니다 |
 | `discernment-nudge` | 답변 뒤에 「이건 확인해 보셨나요」 하는 질문을 붙여줍니다 |
 
-#### `skill-creator` — 스킬을 만들어주는 스킬
+## `skill-creator` — 스킬을 만들어주는 스킬
 
 `example-skills` 안에 들어 있습니다. **스킬을 직접 만들어 보고 싶을 때** 쓰는 도구입니다.
 
