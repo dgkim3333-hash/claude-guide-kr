@@ -1449,8 +1449,10 @@ Claude in Chrome 은 **이미 로그인된 브라우저 세션을 그대로 사�
 | 5 | 내용을 바꾸고 **저장**합니다 (인코딩 UTF-8) |
 | 6 | **Claude 데스크탑을 완전히 종료했다 다시 켭니다** → 아래 「완전 종료」 를 그대로 따라 하세요 |
 
-**처음 쓰시는 분은** 3번에서 열린 폴더에 받은 `중요_claude_desktop_config_기본.json` 을
-**`claude_desktop_config.json` 으로 이름을 바꿔 넣으면** 됩니다. 내용을 복사할 필요가 없습니다.
+**처음 쓰시는 분은** 받은 `중요_claude_desktop_config_기본.json` 을 더블클릭으로 열고,
+**내용을 전부 복사해 내 `claude_desktop_config.json` 에 붙여넣는 것이 편합니다.**
+받은 파일에서 `Ctrl+A` → `Ctrl+C`, 내 파일 탭으로 옮겨 `Ctrl+A` → `Ctrl+V` → `Ctrl+S` — 이게 전부입니다.
+화면 순서는 [Claude_MCP_연결_안내메시지.md](Claude_MCP_연결_안내메시지.md) 에 그대로 있습니다.
 
 > ★ **고치기 전에 원본을 복사해 두세요.** 콤마 하나만 어긋나도 MCP가 하나도 안 뜹니다.
 > ★ `claude_desktop_config_실습용.jsonc` 는 **그대로 넣으면 안 됩니다.** 주석(`//`)이 들어 있어
