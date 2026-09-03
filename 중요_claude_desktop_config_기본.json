@@ -1,10 +1,10 @@
 {
   "mcpServers": {
-    "youtube": {
+    "memory": {
       "command": "npx",
       "args": [
         "-y",
-        "@kevinwatt/yt-dlp-mcp@latest"
+        "@modelcontextprotocol/server-memory"
       ]
     },
     "youtube-transcript": {
