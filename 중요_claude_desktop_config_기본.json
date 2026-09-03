@@ -56,20 +56,20 @@
         "PYTHONUTF8": "1"
       }
     },
-    "datagokr": {
-      "command": "uv",
+    "firecrawl": {
+      "command": "npx",
       "args": [
-        "--directory",
-        "C:\\AI\\mcp\\datagokr-mcp",
-        "run",
-        "python",
-        "server.py"
+        "-y",
+        "firecrawl-mcp"
       ],
       "env": {
-        "DATA_GO_KR_SERVICE_KEY": "<<여기에_공공데이터포털_API_키_입력>>",
-        "EPOST_SERVICE_KEY": "<<여기에_공공데이터포털_API_키_입력>>",
-        "PYTHONIOENCODING": "utf-8",
-        "PYTHONUTF8": "1"
+        "FIRECRAWL_API_KEY": "<<여기에_Firecrawl_키_입력__fc-로_시작합니다>>",
+        "FIRECRAWL_RETRY_MAX_ATTEMPTS": "5",
+        "FIRECRAWL_RETRY_INITIAL_DELAY": "2000",
+        "FIRECRAWL_RETRY_MAX_DELAY": "30000",
+        "FIRECRAWL_RETRY_BACKOFF_FACTOR": "3",
+        "FIRECRAWL_CREDIT_WARNING_THRESHOLD": "2000",
+        "FIRECRAWL_CREDIT_CRITICAL_THRESHOLD": "500"
       }
     }
   }

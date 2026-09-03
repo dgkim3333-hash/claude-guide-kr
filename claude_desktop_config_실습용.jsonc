@@ -189,39 +189,39 @@
     // =========================================================================
 
     // -------------------------------------------------------------------------
-    // datagokr : 공공데이터포털 종합 (부동산 실거래가·건축물대장·온비드 공매 등)
+    // firecrawl : 웹페이지를 Claude 가 읽을 수 있는 글자로 바꿔주는 서버
     //
-    //   ★ 로컬 설치 경로 입력 필요 ★
-    //   이 MCP 는 npx/uvx 로 자동 설치되지 않습니다.
-    //   소스를 내 PC 에 먼저 내려받은 뒤, 그 폴더 경로를 아래 --directory 에
-    //   이 교육에서는 C:\AI\mcp\datagokr-mcp 에 두기로 통일했습니다.
-    //   경로는 역슬래시 두 개(\\)로 적어야 합니다.
-    //   필요조건 : uv/uvx  +  Python
+    //   ★ 폴더가 필요 없습니다 ★
+    //   npx 가 알아서 받아서 실행합니다. 내려받을 소스도, 경로 설정도 없습니다.
+    //   필요조건 : Node.js (사전 준비에서 설치)
     //
     //   ★ API 키 입력 필요 ★
-    //   발급처 : https://www.data.go.kr  → 가입 → 원하는 API 마다 "활용신청"
-    //   키 형태 : 64자리 영문+숫자 (Decoding 키를 쓰세요)
-    //   비용    : 무료
-    //   ※ 공공데이터포털은 API 별로 따로 신청해야 합니다.
-    //   ※ EPOST_SERVICE_KEY(우편번호·주소 검색)도 같은 포털에서 발급합니다.
-    //     같은 계정이면 보통 같은 키를 그대로 쓰면 됩니다.
+    //   발급처 : https://www.firecrawl.dev  → 가입 → 왼쪽 메뉴 API Keys
+    //   키 형태 : fc- 로 시작합니다
+    //   비용    : 무료 (월 1,000크레딧 · 신용카드 불필요 · 2026-09-03 확인)
+    //   ※ 키는 만든 직후 한 번만 온전히 보입니다. 바로 메모장에 붙여두세요.
+    //   ※ 아래 RETRY·THRESHOLD 값은 그대로 두시면 됩니다. 재시도 규칙입니다.
+    //
+    //   ※ datagokr(공공데이터포털)는 이 파일에서 뺐습니다.
+    //     소스 폴더를 따로 받아야 해서 수업 중에 하기 어렵습니다.
+    //     붙이시려면 README 5단계의 datagokr 절을 보고 수업 뒤에 하십시오.
     // -------------------------------------------------------------------------
-    "datagokr": {
-      "command": "uv",
+    "firecrawl": {
+      "command": "npx",
       "args": [
-        "--directory",
-        "C:\\AI\\mcp\\datagokr-mcp",
-        "run",
-        "python",
-        "server.py"
+        "-y",
+        "firecrawl-mcp"
       ],
       "env": {
-        // ↓↓↓ 여기에 공공데이터포털 서비스 키(Decoding)를 넣으세요 ↓↓↓
-        "DATA_GO_KR_SERVICE_KEY": "<<여기에_공공데이터포털_API_키_입력>>",
-        "EPOST_SERVICE_KEY": "<<여기에_공공데이터포털_API_키_입력>>",
+        // ↓↓↓ 여기에 Firecrawl 키를 넣으세요 (fc- 로 시작합니다) ↓↓↓
+        "FIRECRAWL_API_KEY": "<<여기에_Firecrawl_키_입력__fc-로_시작합니다>>",
 
-        "PYTHONIOENCODING": "utf-8",
-        "PYTHONUTF8": "1"
+        "FIRECRAWL_RETRY_MAX_ATTEMPTS": "5",
+        "FIRECRAWL_RETRY_INITIAL_DELAY": "2000",
+        "FIRECRAWL_RETRY_MAX_DELAY": "30000",
+        "FIRECRAWL_RETRY_BACKOFF_FACTOR": "3",
+        "FIRECRAWL_CREDIT_WARNING_THRESHOLD": "2000",
+        "FIRECRAWL_CREDIT_CRITICAL_THRESHOLD": "500"
       }
     }
 
