@@ -1,0 +1,21 @@
+[project]
+name = "datagokr-mcp"
+version = "0.1.0"
+description = "data.go.kr 42+ APIs as a single MCP server"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0.0",
+    "httpx>=0.27.0",
+    "xmltodict>=0.13.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+datagokr-mcp = "server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["core", "apis"]

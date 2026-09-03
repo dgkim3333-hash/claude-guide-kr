@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "datagokr": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\AI\\mcp\\datagokr-mcp",
+        "run",
+        "python",
+        "server.py"
+      ],
+      "env": {
+        "DATA_GO_KR_SERVICE_KEY": "여기에_data.go.kr_Decoding된_일반인증키_입력",
+        "EPOST_SERVICE_KEY": "여기에_본인_EPOST_서비스키_입력"
+      }
+    }
+  }
+}
