@@ -1617,7 +1617,7 @@ Claude in Chrome 은 **이미 로그인된 브라우저 세션을 그대로 사�
 | 구분 | 서버 | 준비물 |
 |---|---|---|
 | **바로 되는 것 (7개)** | youtube · youtube-transcript · context7 · sequential-thinking · playwright · hwp-read · word | **없음.** 붙여넣고 재시작하면 끝 |
-| **API 키 예제 (1개)** | **datagokr** | 공공데이터포털 인증키 + [소스 폴더](경매물건분석/mcp/datagokr-mcp) 받기 |
+| **API 키 예제 (1개)** | **datagokr** | 공공데이터포털 인증키 + [소스 폴더](https://github.com/dgkim3333-hash/claude-guide-kr/tree/main/%EA%B2%BD%EB%A7%A4%EB%AC%BC%EA%B1%B4%EB%B6%84%EC%84%9D/mcp/datagokr-mcp) 받기 |
 
 **키가 없는 상태로 붙여넣으면 datagokr 하나만 붉은 오류가 납니다.** 고장이 아닙니다.
 나머지 7개는 정상 작동합니다. datagokr 는 「API 키를 넣는 법」을 배우는 **예제**로 하나만 남긴 것입니다.
@@ -1639,10 +1639,10 @@ Claude in Chrome 은 **이미 로그인된 브라우저 세션을 그대로 사�
 
 **받는 법 — 이 저장소 안에 들어 있습니다**
 
-> **소스 폴더 바로 보기 →** [경매물건분석/mcp/datagokr-mcp](경매물건분석/mcp/datagokr-mcp)
+> **소스 폴더 바로 보기 →** [경매물건분석/mcp/datagokr-mcp](https://github.com/dgkim3333-hash/claude-guide-kr/tree/main/%EA%B2%BD%EB%A7%A4%EB%AC%BC%EA%B1%B4%EB%B6%84%EC%84%9D/mcp/datagokr-mcp)
 
 1. 이 저장소 첫 화면에서 초록색 `Code` 버튼 → `Download ZIP`
-2. 압축을 풀고 **[`경매물건분석/mcp/datagokr-mcp/`](경매물건분석/mcp/datagokr-mcp)** 폴더를 통째로 복사
+2. 압축을 풀고 **[`경매물건분석/mcp/datagokr-mcp/`](https://github.com/dgkim3333-hash/claude-guide-kr/tree/main/%EA%B2%BD%EB%A7%A4%EB%AC%BC%EA%B1%B4%EB%B6%84%EC%84%9D/mcp/datagokr-mcp)** 폴더를 통째로 복사
 3. **`C:\AI\mcp\`** 안에 붙여넣기 → 최종 모습은 `C:\AI\mcp\datagokr-mcp\`
    **폴더 이름을 바꾸지 마세요.** 설정 파일이 이 이름을 찾습니다
 
