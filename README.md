@@ -118,7 +118,7 @@ Claude 데스크탑을 처음 쓰시는 분들을 위한 실습 자료입니다.
 
 **① 파일이 실제로 깔렸는지 봅니다** (PowerShell 기준)
 
-```powershell
+```
 dir "$env:USERPROFILE\.local\bin\uv.exe"
 ```
 
@@ -138,19 +138,19 @@ dir "$env:USERPROFILE\.local\bin\uv.exe"
 
 **[1] 실행 권한을 이번 한 번만 풀고 설치합니다** — 한 줄 전체를 복사하셔야 합니다
 
-```powershell
+```
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
 **[2] 위가 안 되면 winget 으로 깝니다**
 
-```powershell
+```
 winget install --id=astral-sh.uv -e
 ```
 
 **[3] 확인** — 창을 완전히 닫고 새로 연 다음
 
-```powershell
+```
 uv --version
 ```
 
@@ -3044,7 +3044,7 @@ https://bun.sh
 
 3번에 넣을 한 줄입니다. **저장소 안내문에 있는 그대로**입니다.
 
-```bash
+```
 git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack && cd ~/.claude/skills/gstack && ./setup
 ```
 
