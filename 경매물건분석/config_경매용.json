@@ -49,6 +49,7 @@
       ],
       "env": {
         "DATA_GO_KR_SERVICE_KEY": "<본인 공공데이터포털 키 — real-estate 와 같은 값>",
+        "EPOST_SERVICE_KEY": "<본인 공공데이터포털 키 — real-estate 와 같은 값>",
         "PYTHONIOENCODING": "utf-8",
         "PYTHONUTF8": "1"
       }

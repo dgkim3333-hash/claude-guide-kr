@@ -100,6 +100,7 @@ C:\AI\mcp\
   "args": ["--directory", "C:\\AI\\mcp\\datagokr-mcp", "run", "python", "server.py"],
   "env": {
     "DATA_GO_KR_SERVICE_KEY": "공공데이터포털_인증키",
+    "EPOST_SERVICE_KEY": "공공데이터포털_인증키",
     "PYTHONIOENCODING": "utf-8",
     "PYTHONUTF8": "1"
   }
