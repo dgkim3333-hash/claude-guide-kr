@@ -1582,6 +1582,7 @@ Claude in Chrome 은 **이미 로그인된 브라우저 세션을 그대로 사�
 | ★ [Claude_공공데이터_API키_발급안내.md](Claude_공공데이터_API키_발급안내.md) | **인증키 발급 전문.** 활용신청(자료마다 따로) · 승인 확인 · Encoding/Decoding · 활용기간 2년 |
 | ★ [Claude_MCP_연결_안내메시지.md](Claude_MCP_연결_안내메시지.md) | **MCP 연결 전문.** 설정 파일 붙여넣기 · datago 연결 · Firecrawl 등록 · 없는 MCP 는 Claude 에게 만들어 달라고 |
 | ★ [MCP_동작원리.md](MCP_동작원리.md) | **붙이기 전에 한 번 읽어보세요.** 설정 파일에 적으면 무슨 일이 벌어지나 · 다섯 관문 · 빨간불과 빈 답의 차이 |
+| ★ [기본config_8개_설명.md](기본config_8개_설명.md) | **8개가 각각 무엇을 해주나.** 서버별 쓰임새 · 이렇게 말하면 됩니다 · 여기 없는 것들 |
 | ★ [중요_claude_desktop_config_기본.json](중요_claude_desktop_config_기본.json) | **MCP 8개 — 키 없이 되는 7개 + API 예제 1개(firecrawl).** 여기부터 시작하세요 |
 | [claude_desktop_config_실습용.jsonc](claude_desktop_config_실습용.jsonc) | 설명이 잔뜩 달린 확장판. 키 발급처와 주의사항 포함 |
 
