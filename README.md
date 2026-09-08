@@ -2,23 +2,7 @@
 
 > [!IMPORTANT]
 > **위의 파일 목록은 무시하셔도 됩니다. 여기서 시작하십시오.**
-> 아래 파란 버튼을 **순서대로** 누르면 됩니다. 각 장 맨 아래에 「다음 →」 이 있습니다.
-
-## ▶ 시작하기 — 버튼을 누르세요
-
-[![01 Claude 시작하기](https://img.shields.io/badge/01-Claude_%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-1456F0?style=for-the-badge)](01_Claude시작하기.md)
-[![02 설치하기](https://img.shields.io/badge/02-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0-1456F0?style=for-the-badge)](02_설치하기.md)
-[![03 사전 준비 프로그램](https://img.shields.io/badge/03-%EC%82%AC%EC%A0%84_%EC%A4%80%EB%B9%84_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-1456F0?style=for-the-badge)](03_사전준비프로그램.md)
-[![04 회원가입과 커넥터](https://img.shields.io/badge/04-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85%EA%B3%BC_%EC%BB%A4%EB%84%A5%ED%84%B0-1456F0?style=for-the-badge)](04_회원가입과커넥터.md)
-[![05 MCP 와 API](https://img.shields.io/badge/05-MCP_%EC%99%80_API-1456F0?style=for-the-badge)](05_MCP와API.md)
-[![06 스킬](https://img.shields.io/badge/06-%EC%8A%A4%ED%82%AC-1456F0?style=for-the-badge)](06_스킬.md)
-[![07 프로젝트·아티팩트·예정됨](https://img.shields.io/badge/07-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%C2%B7%EC%95%84%ED%8B%B0%ED%8C%A9%ED%8A%B8%C2%B7%EC%98%88%EC%A0%95%EB%90%A8-1456F0?style=for-the-badge)](07_프로젝트_아티팩트_예정됨.md)
-[![08 실전 테마 레이더](https://img.shields.io/badge/08-%EC%8B%A4%EC%A0%84_%ED%85%8C%EB%A7%88_%EB%A0%88%EC%9D%B4%EB%8D%94-1456F0?style=for-the-badge)](08_실전_테마레이더.md)
-[![09 실전 경매 물건 분석](https://img.shields.io/badge/09-%EC%8B%A4%EC%A0%84_%EA%B2%BD%EB%A7%A4_%EB%AC%BC%EA%B1%B4_%EB%B6%84%EC%84%9D-1456F0?style=for-the-badge)](09_실전_경매물건분석.md)
-
-<br>
-
-**처음이시면 01 부터.** 이미 Claude 를 깔았으면 03 부터. 수업에 오시는 분은 아래 「수업 전에 미리 해오십시오」를 먼저 보십시오.
+> 아래 표에서 **파란 글씨를 순서대로** 누르면 됩니다. 각 장 맨 아래에 「다음 →」 이 있습니다.
 
 ---
 
