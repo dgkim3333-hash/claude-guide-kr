@@ -105,7 +105,8 @@
 | [Claude_스킬_설치안내.md](Claude_스킬_설치안내.md) | 스킬 설치 | 06 |
 | [mcp-health-check.skill](mcp-health-check.skill) | MCP 점검 스킬 (파일로 받는 유일한 스킬) | 06 |
 | [스킬제작소_예시원고_경매공매물건분석.txt](스킬제작소_예시원고_경매공매물건분석.txt) | 스킬제작소에 넣어본 실제 원고 | 06 |
-| [Claude_in_Chrome_설치안내.md](Claude_in_Chrome_설치안내.md) | 크롬 확장 | 08 |
+| ★ [크롬연결/README.md](크롬연결/README.md) | **크롬 붙이기 한 장 요약** — 설치 4단계 · 안 될 때 | 08 |
+| [Claude_in_Chrome_설치안내.md](Claude_in_Chrome_설치안내.md) | 크롬 확장 · 내장 브라우저 전문 | 08 |
 | [Excel_MCP_설치안내.md](Excel_MCP_설치안내.md) | 엑셀 조종 | 08 |
 | [개인설정_A_주식용.md](개인설정_A_주식용.md) · [B_경매공매용](개인설정_B_경매공매용.md) · [C_둘다](개인설정_C_주식과경매공매용.md) | 관심사별 개인설정 | 04 |
 | [주식실습/](https://github.com/dgkim3333-hash/claude-guide-kr/tree/main/%EC%A3%BC%EC%8B%9D%EC%8B%A4%EC%8A%B5) | 테마 레이더 · 텐베거 | 08 |
