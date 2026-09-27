@@ -4,6 +4,28 @@
 > **위의 파일 목록은 무시하셔도 됩니다. 여기서 시작하십시오.**
 > 아래 표에서 **파란 글씨를 순서대로** 누르면 됩니다. 각 장 맨 아래에 「다음 →」 이 있습니다.
 
+> [!CAUTION]
+> **firecrawl 이 안 되는 분 — 2026-09-25 오후부터 생긴 문제입니다**
+>
+> firecrawl 새 버전(3.25.5)이 Claude 앱과 맞지 않아 **도구가 전부 거부됩니다.**
+> 아래 문구가 보이면 이 경우입니다. 여러분 설정이 잘못된 것이 아닙니다.
+>
+> `invalid outputSchema` · `draft-07`
+>
+> **고치는 법** — 설정 파일에서 한 곳만 바꾸고 Claude 를 완전히 껐다 켜면 됩니다.
+>
+> | | |
+> |---|---|
+> | 바꾸기 전 | `"firecrawl-mcp"` |
+> | 바꾼 뒤 | `"firecrawl-mcp@3.25.4"` |
+>
+> 설정 파일은 Claude 앱에서 **`설정` → `개발자` → `구성 편집`** 을 누르면 바로 열립니다.
+> 메모장 말고 **VS Code** 로 여십시오. 고치기 전에 복사본을 하나 만들어 두세요.
+>
+> **이 저장소의 설정 파일 두 개는 이미 고쳐 두었습니다.** 새로 받으시는 분은 그대로 쓰시면 됩니다.
+> 고쳐진 버전이 나오면 다시 공지하겠습니다. 그때 `@3.25.4` 만 지우시면 됩니다.
+> (2026-09-27 확인 — 아직 고쳐진 버전 없음)
+
 ---
 
 ## 읽는 순서 — 교재 PDF 와 같은 번호입니다
@@ -100,8 +122,8 @@
 | [MCP_동작원리.md](MCP_동작원리.md) | MCP 는 어떻게 도는가 — 다섯 관문 | 05 |
 | [Claude_MCP_연결_안내메시지.md](Claude_MCP_연결_안내메시지.md) | MCP 연결 안내 전문 | 05 |
 | [Claude_공공데이터_API키_발급안내.md](Claude_공공데이터_API키_발급안내.md) | 공공데이터포털 인증키 | 05 |
-| [중요_claude_desktop_config_기본.json](중요_claude_desktop_config_기본.json) | 설정 파일 — 서버 8개 | 05 |
-| [claude_desktop_config_실습용.jsonc](claude_desktop_config_실습용.jsonc) | 설정 파일 — 주석 달린 실습용 | 05 |
+| [중요_claude_desktop_config_기본.json](중요_claude_desktop_config_기본.json) | 설정 파일 — 서버 8개 · **firecrawl 3.25.4 고정본** | 05 |
+| [claude_desktop_config_실습용.jsonc](claude_desktop_config_실습용.jsonc) | 설정 파일 — 주석 달린 실습용 · **firecrawl 3.25.4 고정본** | 05 |
 | [Claude_스킬_설치안내.md](Claude_스킬_설치안내.md) | 스킬 설치 | 06 |
 | [mcp-health-check.skill](mcp-health-check.skill) | MCP 점검 스킬 (파일로 받는 유일한 스킬) | 06 |
 | [스킬제작소_예시원고_경매공매물건분석.txt](스킬제작소_예시원고_경매공매물건분석.txt) | 스킬제작소에 넣어본 실제 원고 | 06 |
