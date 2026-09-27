@@ -60,7 +60,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "firecrawl-mcp"
+        "firecrawl-mcp@3.25.4"
       ],
       "env": {
         "FIRECRAWL_API_KEY": "<<여기에_Firecrawl_키_입력__fc-로_시작합니다>>",
