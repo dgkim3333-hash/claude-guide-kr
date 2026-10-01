@@ -8,7 +8,7 @@
 
 ---
 
-## 시작 전에 — 두 가지만 확인하십시오
+## $\color{#d97757}{\textsf{시작 전에 — 두 가지만 확인하십시오}}$
 
 | 조건 | 되는 것 | 안 되는 것 |
 |---|---|---|
@@ -21,7 +21,7 @@
 
 ---
 
-## 설치 — 4단계
+## $\color{#d97757}{\textsf{설치 — 4단계}}$
 
 | 순서 | 할 일 | 이렇게 되면 성공 |
 |---|---|---|
@@ -58,7 +58,7 @@ https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn
 
 ---
 
-## 여기까지면 끝입니다
+## $\color{#d97757}{\textsf{여기까지면 끝입니다}}$
 
 툴바의 **Claude 아이콘**을 누르면 옆에 패널이 열립니다. **별도 설정이 없습니다.**
 
@@ -80,7 +80,7 @@ https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn
 
 ---
 
-## 데스크탑 앱에서도 크롬을 부리고 싶다면
+## $\color{#d97757}{\textsf{데스크탑 앱에서도 크롬을 부리고 싶다면}}$
 
 | 무엇을 | 어디서 |
 |---|---|
@@ -96,7 +96,7 @@ https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn
 
 ---
 
-## 크롬을 안 쓰신다면 — 내장 브라우저
+## $\color{#d97757}{\textsf{크롬을 안 쓰신다면 — 내장 브라우저}}$
 
 데스크탑 앱에 브라우저가 하나 들어 있습니다. **설치하실 것이 없습니다.**
 
@@ -112,7 +112,7 @@ https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn
 
 ---
 
-## 주의
+## $\color{#d97757}{\textsf{주의}}$
 
 > [!IMPORTANT]
 > - Claude 가 **로그인된 화면을 그대로 봅니다.** 켜기 전에 무슨 탭이 열려 있는지 보세요.
@@ -123,7 +123,7 @@ https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn
 
 ---
 
-## 더 자세한 안내
+## $\color{#d97757}{\textsf{더 자세한 안내}}$
 
 | 문서 | 무엇이 있나 |
 |---|---|
