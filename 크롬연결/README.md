@@ -72,6 +72,12 @@ https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn
 | 로그인이 안 된다 | **무료 플랜**인지 확인합니다 |
 | 여전히 안 된다 | **크롬**이 맞는지 확인합니다 (엣지 · 웨일은 지원하지 않습니다) |
 
+> [!WARNING]
+> **경매 사이트에서 파일을 받게 하실 분은 꼭 하세요 — 「자동 다운로드」 허용**
+> 안 하면 두 번째 파일부터 **오류 없이 사라집니다.** 크롬 주소창에 `chrome://settings/content/automaticDownloads` →
+> `여러 파일 자동 다운로드가 허용됨` 옆 `추가` → 경매 사이트 주소(예: `https://www.courtauction.go.kr`).
+> 자세한 화면 읽는 법은 **[Claude_in_Chrome_설치안내.md](../Claude_in_Chrome_설치안내.md)** 의 「자동 다운로드 허용」 절에 있습니다.
+
 ---
 
 ## 데스크탑 앱에서도 크롬을 부리고 싶다면
