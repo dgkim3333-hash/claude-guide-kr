@@ -136,6 +136,7 @@
 | ★ [크롬연결/README.md](크롬연결/README.md) | **크롬 붙이기 한 장 요약** — 설치 4단계 · 안 될 때 | 08 |
 | [Claude_in_Chrome_설치안내.md](Claude_in_Chrome_설치안내.md) | 크롬 확장 · 내장 브라우저 전문 | 08 |
 | [Excel_MCP_설치안내.md](Excel_MCP_설치안내.md) | 엑셀 조종 | 08 |
+| ★ [확장프로그램_설치안내.md](확장프로그램_설치안내.md) | **Excel · PDF Tools 확장 프로그램** — 파일 받기 · 끌어다 놓기 | 05 · 08 |
 | [개인설정_A_주식용.md](개인설정_A_주식용.md) · [B_경매공매용](개인설정_B_경매공매용.md) · [C_둘다](개인설정_C_주식과경매공매용.md) | 관심사별 개인설정 | 04 |
 | [주식실습/](https://github.com/dgkim3333-hash/claude-guide-kr/tree/main/%EC%A3%BC%EC%8B%9D%EC%8B%A4%EC%8A%B5) | 테마 레이더 · 텐베거 | 08 |
 | [엑셀실습/](https://github.com/dgkim3333-hash/claude-guide-kr/tree/main/%EC%97%91%EC%85%80%EC%8B%A4%EC%8A%B5) | 엑셀 탐색 시트 예제 | 08 |
