@@ -80,6 +80,30 @@ Windows 에 처음부터 들어 있어서 **따로 깔 필요가 없습니다.**
 > 첫 줄에 `PS` 가 없고 `C:\Users\내이름>` 만 보이면 **명령 프롬프트(cmd)** 를 연 것입니다.
 > 닫고 위 순서대로 다시 여세요. 두 창의 차이는 [uv 설치 1번](03_설치_uv.md) 에 있습니다.
 
+### PowerShell 이 안 보이면
+
+**Windows 10 · 11 에는 「Windows PowerShell」이 처음부터 들어 있습니다** `[확정 — Microsoft Learn 「Windows PowerShell 7 설치」: Windows PowerShell 5.1 은 Windows 에 기본 설치]`.
+검색에 안 나오면 먼저 아래 방법으로 열어 보세요.
+
+| 순서 | 할 일 | 이렇게 되면 성공 |
+|---|---|---|
+| **1** | 키보드에서 **Windows 키 + R** 을 함께 누릅니다 | 왼쪽 아래에 「실행」 작은 창 |
+| **2** | `powershell` 이라고 치고 **Enter** | PowerShell 창이 열리고 첫 줄이 `PS` 로 시작 |
+
+**그래도 열리지 않으면 새로 설치합니다.** Microsoft 가 무료로 배포하는 **PowerShell 7** 입니다.
+
+[![PowerShell 받기](https://img.shields.io/badge/PowerShell_7-%EB%B0%9B%EA%B8%B0-5391FE?style=for-the-badge)](https://www.microsoft.com/store/apps/9MZ1SNWT0N5D)
+
+| 방법 | 할 일 |
+|---|---|
+| **A. Microsoft Store (쉬움)** | 위 버튼 또는 **바로 가기 →** <https://www.microsoft.com/store/apps/9MZ1SNWT0N5D> → Store 화면에서 **「받기」(설치)** |
+| **B. 설치 파일 직접 받기** (Store 가 막힌 회사 PC 등) | **바로 가기 →** <https://github.com/PowerShell/PowerShell/releases/download/v7.6.6/PowerShell-7.6.6-win-x64.msi> → 받은 `.msi` 를 더블클릭 → 선택지는 **기본값 그대로** 다음 |
+
+설치가 끝나면 시작 메뉴에서 **PowerShell 7** 을 찾아 엽니다(검색창에 `powershell` 또는 `pwsh`).
+첫 줄이 `PS` 로 시작하면 성공이고, **이 교재의 명령은 그대로 쓰시면 됩니다.** Windows PowerShell(5.1)과 PowerShell 7 은 이 교재 범위에서 문법이 같습니다.
+
+> B 의 파일 이름에 있는 `7.6.6` 은 2026-10-01 기준 최신 판입니다. 숫자가 달라져도 Store(A)로 받으면 늘 최신이 깔립니다.
+
 ## 3. 설치 확인
 
 Node.js 설치가 끝났으면 **PowerShell 을 새로 열고** 아래 한 줄을 넣습니다.
@@ -106,3 +130,4 @@ Node.js 를 새로 깔았다면 **Claude 데스크탑을 완전히 종료했다�
 [← 03 사전 준비 프로그램으로 돌아가기](03_사전준비프로그램.md#설치--nodejs--uv--vs-code--git)
 
 출처: <https://nodejs.org/ko/download> (2026-10-01 확인 — 현재 LTS v24.21.0, 화면 구성: 위쪽 명령어 상자 + 아래쪽 「Windows 설치 프로그램 (.msi)」 버튼)
+PowerShell: <https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell-on-windows> (2026-10-01 확인 — Windows PowerShell 5.1 기본 설치, PowerShell 7 Microsoft Store · MSI 7.6.6)
