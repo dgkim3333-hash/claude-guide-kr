@@ -7,7 +7,7 @@
 > 섹션 05 에서 설정 파일의 `"command": "npx"` 로 띄우는 MCP 에 필요합니다.
 > 이게 없으면 그 MCP 는 설정 파일을 아무리 잘 넣어도 나타나지 않습니다.
 
-## 1. 받기
+## $\color{#d97757}{\textsf{1. 받기}}$
 
 [![Node.js 받기](https://img.shields.io/badge/Node.js-%EB%B0%9B%EA%B8%B0-339933?style=for-the-badge)](https://nodejs.org/ko/download)
 
@@ -26,7 +26,7 @@
 > 옆의 **「Standalone Binary (.zip)」 는 누르지 마세요.** 압축 파일이라 설치가 되지 않습니다.
 > 대부분의 PC 는 `x64` 그대로 두면 됩니다. 노트북이 ARM 칩(일부 Surface 등)이면 `x64` 칸을 눌러 `ARM64` 로 바꾸세요.
 
-## ★ 체크박스 하나만 조심하세요 — 여기서 30분이 날아갑니다
+## $\color{#d97757}{\textsf{★ 체크박스 하나만 조심하세요 — 여기서 30분이 날아갑니다}}$
 
 설치가 거의 끝날 무렵 이런 체크박스가 나옵니다.
 
@@ -59,7 +59,9 @@ This will require about 7 GiB of free disk space...
 공간만 차지합니다. 정리하고 싶으시면 `설정 → 앱` 에서 **Chocolatey** 와
 **Visual Studio Build Tools** 를 지우시면 됩니다.
 
-## 2. PowerShell 열기 — 글자로 컴퓨터에 일을 시키는 창
+<a id="2-powershell-열기--글자로-컴퓨터에-일을-시키는-창"></a>
+
+## $\color{#d97757}{\textsf{2. PowerShell 열기 — 글자로 컴퓨터에 일을 시키는 창}}$
 
 **PowerShell(파워셸)** 은 마우스 대신 **글자(명령어)로 컴퓨터에 일을 시키는 창**입니다.
 Windows 에 처음부터 들어 있어서 **따로 깔 필요가 없습니다.**
@@ -82,7 +84,7 @@ Windows 에 처음부터 들어 있어서 **따로 깔 필요가 없습니다.**
 
 **검색해도 Windows PowerShell 이 안 나오는 분만** → [PowerShell 이 안 보일 때 (눌러서 보기)](03_PowerShell_안보일때.md)
 
-## 3. 설치 확인
+## $\color{#d97757}{\textsf{3. 설치 확인}}$
 
 Node.js 설치가 끝났으면 **PowerShell 을 새로 열고** 아래 한 줄을 넣습니다.
 (설치 전부터 열어 둔 창이 있으면 닫고 새로 여세요. 예전 창은 새로 깔린 프로그램을 모릅니다.)
@@ -98,7 +100,7 @@ node -v
 > 수업에서 붙이는 **Firecrawl 은 Node.js 22 이상**을 요구합니다 (`firecrawl-mcp` 3.24.0 기준).
 > `v20` 이나 `v18` 이 나오면 위 1번으로 돌아가 **「Windows 설치 프로그램 (.msi)」** 으로 다시 설치하십시오. 덮어써집니다.
 
-## 4. Claude 데스크탑 다시 켜기
+## $\color{#d97757}{\textsf{4. Claude 데스크탑 다시 켜기}}$
 
 Node.js 를 새로 깔았다면 **Claude 데스크탑을 완전히 종료했다가 다시 켜야** 인식합니다.
 창만 닫으면 뒤에서 계속 돌고 있습니다. 작업 표시줄 우측 트레이 아이콘까지 종료하세요.
