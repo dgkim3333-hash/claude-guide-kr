@@ -378,7 +378,8 @@ C:\AI\mcp\datagokr-mcp\
 
 ---
 
-#### 0단계 — 활용신청부터 걸어두세요
+<details>
+<summary><b>0단계 — 활용신청부터 걸어두세요</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
 **안 하면 설치를 다 끝내고도 빈 답이 옵니다.** 자료마다 따로 신청합니다. 승인을 기다리는 동안 1~3단계를 하세요.
 
@@ -455,9 +456,10 @@ https://www.data.go.kr
 **인증키도 여기서 받습니다** — 마이페이지 → Open API → **인증키 발급현황** → **Decoding** 쪽을 복사 (Encoding 아님).
 자세한 화면은 [Claude_공공데이터_API키_발급안내.md](Claude_공공데이터_API키_발급안내.md) 에 있습니다.
 
----
+</details>
 
-#### 1단계 — Claude 에게 만들어 달라고 하기
+<details>
+<summary><b>1단계 — Claude 에게 만들어 달라고 하기</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
 **Cowork 에서만 됩니다.** 일반 대화창에서는 코드를 글로만 써줍니다.
 
@@ -567,9 +569,10 @@ API 주소가 맞는지 실제로 호출해서 확인해줘.
 
 </details>
 
----
+</details>
 
-#### 2단계 — PowerShell 열기
+<details>
+<summary><b>2단계 — PowerShell 열기</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
 **①** 탐색기로 `C:\AI\mcp\datagokr-mcp` 폴더를 엽니다
 **②** 위쪽 주소창을 한 번 클릭 — 주소가 파란색으로 선택됩니다
@@ -588,9 +591,10 @@ cd C:\AI\mcp\datagokr-mcp
 
 </details>
 
----
+</details>
 
-#### 3단계 — `uv sync` 로 부품 받기
+<details>
+<summary><b>3단계 — <code>uv sync</code> 로 부품 받기</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
 ```
 uv sync
@@ -620,9 +624,10 @@ Installed 28 packages in 3.4s
 
 </details>
 
----
+</details>
 
-#### 4단계 — 설정 파일에 등록하고 키 넣기
+<details>
+<summary><b>4단계 — 설정 파일에 등록하고 키 넣기</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
 `설정 → 개발자 → 구성 편집` 으로 파일을 열고, `"mcpServers": {` **바로 아래**에 넣습니다.
 
@@ -650,15 +655,17 @@ Installed 28 packages in 3.4s
 
 </details>
 
----
+</details>
 
-#### 5단계 — Claude 완전 종료 후 재시작
+<details>
+<summary><b>5단계 — Claude 완전 종료 후 재시작</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
 **설정 파일은 켤 때만 읽습니다.** 트레이 아이콘 오른쪽 클릭 → 종료까지 하십시오. (위 「완전 종료」 절)
 
----
+</details>
 
-#### 6단계 — 진짜로 되는지 확인
+<details>
+<summary><b>6단계 — 진짜로 되는지 확인</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
 **새 대화**를 열고 이렇게 물어보십시오.
 
@@ -674,7 +681,7 @@ Installed 28 packages in 3.4s
 
 **서버 목록에 `datagokr` 이름이 떠 있는 것과 실제로 자료가 오는 것은 다릅니다.** 이 확인을 꼭 하십시오.
 
----
+</details>
 
 <details>
 <summary><b>막혔을 때 — 증상별로 이 순서로 봐주세요</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
