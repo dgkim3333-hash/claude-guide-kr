@@ -124,7 +124,6 @@
 | [Claude_업무활용지침.md](Claude_업무활용지침.md) | 업무 활용 지침 전문 (붙여넣기용) | 04 |
 | [Claude_커넥터_안내.md](Claude_커넥터_안내.md) | 커넥터 안내 전문 | 04 |
 | [Claude_PlayMCP_연결안내.md](Claude_PlayMCP_연결안내.md) | PlayMCP 도구함 붙이기 | 04 |
-| [ClaudeCode_전역지침.md](ClaudeCode_전역지침.md) | Claude Code 전역 지침 | 04 |
 | [MCP_동작원리.md](MCP_동작원리.md) | MCP 는 어떻게 도는가 — 다섯 관문 | 05 |
 | [Claude_MCP_연결_안내메시지.md](Claude_MCP_연결_안내메시지.md) | MCP 연결 안내 전문 | 05 |
 | [Claude_공공데이터_API키_발급안내.md](Claude_공공데이터_API키_발급안내.md) | 공공데이터포털 인증키 | 05 |
