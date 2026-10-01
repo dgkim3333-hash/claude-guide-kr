@@ -7,7 +7,7 @@ Claude 가 **열려 있는 엑셀을 직접 조종**하게 해주는 확장 프�
 
 ---
 
-## 먼저 확인할 것
+## $\color{#d97757}{\textsf{먼저 확인할 것}}$
 
 | 조건 | 내용 |
 |---|---|
@@ -17,7 +17,7 @@ Claude 가 **열려 있는 엑셀을 직접 조종**하게 해주는 확장 프�
 
 ---
 
-## 1. 파일 받기
+## $\color{#d97757}{\textsf{1. 파일 받기}}$
 
 받는 곳은 GitHub 의 `sbroenne/mcp-server-excel` 저장소 릴리스 페이지입니다.
 
@@ -34,7 +34,7 @@ https://github.com/sbroenne/mcp-server-excel/releases/latest
 
 **이렇게 되면 성공** — 다운로드 폴더에 `.mcpb` 로 끝나는 파일 하나가 생깁니다.
 
-## 2. 설치하기
+## $\color{#d97757}{\textsf{2. 설치하기}}$
 
 1. Claude 데스크탑 앱을 엽니다
 2. `설정` → 왼쪽 **「이 컴퓨터」** 아래 **`확장 프로그램`** 으로 갑니다
@@ -46,7 +46,7 @@ https://github.com/sbroenne/mcp-server-excel/releases/latest
 > **「확장 프로그램 찾아보기」 에서 검색해도 Excel 은 나오지 않습니다.** 이 파일로 설치합니다.
 > PDF Tools 도 같은 방법입니다 → [확장프로그램_설치안내.md](확장프로그램_설치안내.md)
 
-## 3. 확인하기
+## $\color{#d97757}{\textsf{3. 확인하기}}$
 
 1. **열려 있는 엑셀 파일을 전부 닫습니다** (이게 제일 중요합니다)
 2. **새 대화**를 엽니다 — 기존 대화에는 적용되지 않습니다
@@ -56,7 +56,7 @@ https://github.com/sbroenne/mcp-server-excel/releases/latest
 
 ---
 
-## 안 될 때
+## $\color{#d97757}{\textsf{안 될 때}}$
 
 | 증상 | 대처 |
 |---|---|
