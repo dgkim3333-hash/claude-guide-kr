@@ -121,6 +121,11 @@ Claude 를 완전히 껐다 켜시면 됩니다. **이 문서와 배포 config �
 
 ## 기본 config 안에는 두 종류가 들어 있습니다
 
+**키 없이 바로 되는 7개 + 키가 필요한 `firecrawl` 1개**입니다. 키가 없으면 firecrawl 하나만 붉게 뜹니다 — **고장이 아닙니다.**
+
+<details>
+<summary><b>8개 구분표 · 준비물</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
+
 > 📄 교재 PDF **p.24 · p.29** — Node.js 와 uv · 설치 자료는 GitHub 에
 
 | 구분 | 서버 | 준비물 |
@@ -128,11 +133,16 @@ Claude 를 완전히 껐다 켜시면 됩니다. **이 문서와 배포 config �
 | **바로 되는 것 (7개)** | memory · youtube-transcript · context7 · sequential-thinking · playwright · hwp-read · word | **없음.** 붙여넣고 재시작하면 끝 |
 | **API 키 예제 (1개)** | **firecrawl** | firecrawl.dev 무료 가입 후 키 하나. **폴더 불필요** |
 
-**키가 없으면 firecrawl 하나만 붉게 뜹니다. 고장이 아닙니다.** 키 넣는 법은 아래 「Firecrawl」 절에 있습니다.
+키 넣는 법은 아래 「Firecrawl」 절에 있습니다.
+
+</details>
 
 ### MCP 는 세 종류입니다 — 설정 줄만 보면 구분됩니다
 
 **설정 파일에 적는 줄은 「프로그램을 어디서 가져와 실행하라」는 주소입니다.** 그 프로그램이 어디 있느냐에 따라 할 일이 달라집니다.
+
+<details>
+<summary><b>세 종류 비교표 · 설정 줄로 구분하는 법</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
 | | ① 이름만 적는 것 | ② 폴더를 만들어야 하는 것 | ③ 주소만 넣는 것 (커넥터) |
 |---|---|---|---|
@@ -146,6 +156,8 @@ Claude 를 완전히 껐다 켜시면 됩니다. **이 문서와 배포 config �
 - `npx` · `uvx` 뒤에 **이름**만 있다 → ① 붙여넣고 끝
 - `--directory` · `C:\…` · `.py` 처럼 **경로나 파일 이름**이 있다 → ② 그 폴더와 파일부터 만들기
 - `"url": "https://…"` 이다 → ③ 커넥터
+
+</details>
 
 <details>
 <summary><b>비유 · 왜 ②가 생기나 · API 키는 종류와 상관없습니다</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
@@ -842,12 +854,19 @@ winget install yt-dlp
 
 ## 당장 필요한 인증키는 하나입니다
 
+**수업에 필요한 것은 Firecrawl 키 하나입니다.** 공공데이터포털 키는 수업 후 datagokr 를 붙일 때 씁니다.
+
+<details>
+<summary><b>키 · 발급처 · 넣는 곳 표</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
+
 > 📄 교재 PDF **p.50** — 인증키는 하나, 활용신청은 자료마다
 
 | 키 | 발급처 | 넣는 곳 |
 |---|---|---|
 | **Firecrawl 키** | https://www.firecrawl.dev | **기본 config 에서 키가 필요한 유일한 곳.** 무료 · 카드 불필요 · `fc-` 로 시작 |
 | 공공데이터포털 인증키 | https://www.data.go.kr | **수업 후에 쓰십니다.** 경매용 config 3곳 · datagokr 절 (전부 같은 값) |
+
+</details>
 
 <details>
 <summary><b>공공데이터포털 키 · 나중에 늘어나는 키</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
@@ -866,6 +885,11 @@ winget install yt-dlp
 
 ## 커넥터와 config — 붙이는 길이 두 가지입니다
 
+**커넥터는 로그인만, 설정 파일은 직접 편집.** 커넥터가 쉽고, 설정 파일 쪽이 더 많은 것을 할 수 있습니다.
+
+<details>
+<summary><b>두 길 비교표</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
+
 > 📄 교재 PDF **p.41 · p.46** — 붙이는 길은 두 가지 · MCP는 통로, API는 열쇠
 
 | 길 | 어떻게 | 준비물 | 이 문서에서는 |
@@ -876,6 +900,8 @@ winget install yt-dlp
 커넥터가 쉽고, 설정 파일 쪽이 훨씬 많은 것을 할 수 있습니다.
 **섹션 08 실습은 커넥터 길로 갑니다. 섹션 09 경매 분석은 설정 파일 길로 갑니다.**
 
+</details>
+
 ---
 
 ## 기본 config 에 들어 있는 MCP 여덟 개 — 무엇이고, 왜 이것을 골랐나
@@ -884,6 +910,9 @@ winget install yt-dlp
 
 `중요_claude_desktop_config_기본.json` 을 붙여넣으면 서버 **여덟 개**가 등록됩니다.
 **일곱 개는 키가 없어도 그냥 켜지고, `firecrawl` 하나만 키가 필요합니다.**
+
+<details>
+<summary><b>한눈에 보기 — 8개 표</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
 | 이름 | 무엇을 해주나 | 준비물 |
 |---|---|---|
@@ -895,6 +924,8 @@ winget install yt-dlp
 | `hwp-read` | 한글 문서를 읽습니다 | 없음 |
 | `word` | 워드 문서를 읽고 씁니다 | 없음 |
 | **`firecrawl`** | 웹페이지를 글자로 뽑아 줍니다 | **★ API 키 1개** |
+
+</details>
 
 <details>
 <summary><b>왜 하필 이 여덟 개인가</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
