@@ -12,9 +12,7 @@
 
 [![Git 받기](https://img.shields.io/badge/Git-%EB%B0%9B%EA%B8%B0-F05032?style=for-the-badge)](https://git-scm.com/install/windows)
 
-```
-https://git-scm.com/install/windows
-```
+**바로 가기 →** <https://git-scm.com/install/windows>
 
 받아서 **계속 「다음」만 누르시면 됩니다.** 설정은 하나도 안 건드려도 됩니다.
 

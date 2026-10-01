@@ -10,9 +10,7 @@
 
 [![VS Code 받기](https://img.shields.io/badge/VS_Code-%EB%B0%9B%EA%B8%B0-007ACC?style=for-the-badge)](https://code.visualstudio.com/download)
 
-```
-https://code.visualstudio.com/download
-```
+**바로 가기 →** <https://code.visualstudio.com/download>
 
 **무료입니다.** Windows 용을 받아 **계속 「다음」만 누르시면 됩니다.**
 

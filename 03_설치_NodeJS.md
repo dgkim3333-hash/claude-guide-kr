@@ -11,9 +11,7 @@
 
 [![Node.js 받기](https://img.shields.io/badge/Node.js-%EB%B0%9B%EA%B8%B0-339933?style=for-the-badge)](https://nodejs.org/ko/download)
 
-```
-https://nodejs.org/ko/download
-```
+**바로 가기 →** <https://nodejs.org/ko/download>
 
 페이지가 열리면 **위쪽 명령어 상자는 건너뛰고, 아래쪽 초록 버튼만** 씁니다.
 
