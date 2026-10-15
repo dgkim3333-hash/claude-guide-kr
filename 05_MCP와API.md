@@ -65,6 +65,8 @@ Claude 를 완전히 껐다 켜시면 됩니다. **이 문서와 배포 config �
 
 **처음이면** 받은 `중요_claude_desktop_config_기본.json` 의 내용을 **통째로 복사해** 내 파일에 붙여넣습니다.
 
+> 이 설정 파일의 MCP 는 **데스크탑 앱 안(채팅 · Cowork · Code 탭 · Code 루틴)** 에서 모두 쓰입니다. Code 탭용으로 따로 등록할 것은 없습니다. 단 Cowork 는 클라우드에서 돌아 **앱이 켜져 있고 PC 가 깨어 있을 때만** 이 MCP 에 닿습니다 → [섹션 10](10_Cowork클라우드와_Code탭.md)
+
 <details>
 <summary><b>붙여넣는 법 · 고치기 전 주의 두 가지</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
