@@ -9,7 +9,7 @@ description: "슬라이드·보고서에 넣을 도표를 SVG로 그리는 스�
 
 | 도표 | 언제 쓰나 |
 |---|---|
-| **계층 사다리** | 등기부 권리를 순서대로 세우고 말소기준 아래·위로 인수/소멸을 가른다 |
+| **계층 사다리** | 항목을 순서대로 세우고 기준선 위·아래를 다른 색으로 가른다 (예: 등기부 권리와 말소기준) |
 | **타임라인** | 법원 문건접수·송달을 시간순으로 늘어놓고 위험도를 색으로 표시한다 |
 | **폭포 차트** | 총액에서 항목별로 깎여나가 마지막에 얼마가 남는지 보인다 |
 
@@ -43,6 +43,15 @@ def font_guard(font_family):
 
 **변이 검증 통과 (2026-08-27)** — 결함 순서를 넣으면 `차단`, 고친 순서를 넣으면 `통과`.
 가드를 지우거나 우회하지 않는다.
+
+### Windows 환경 (cairosvg·fc-list·Noto Sans CJK KR 이 없을 때 — 강사판 2026-10-05 실측, [미검증])
+
+원칙은 같다 — **첫 항목은 그 환경에 실재하는 폰트.** Windows 에서 직접 렌더할 때만 아래처럼 바꾼다.
+
+- 첫 폰트를 `Malgun Gothic` 으로 둔다: `F = "Malgun Gothic, Noto Sans CJK KR, sans-serif"`.
+- 가드는 `fc-list` 대신 `os.path.exists(r"C:\Windows\Fonts\malgun.ttf")` 로 검사한다. 없으면 같은 방식으로 멈춘다.
+- 렌더는 Edge 헤드리스: `msedge --headless=new --disable-gpu --force-device-scale-factor=2 --screenshot=<png> --window-size=<w>,<h> <svg 파일 URL>`.
+- STEP 4 「눈으로 본다」는 그대로다 — 렌더 PNG를 Read 로 연다.
 
 ---
 
@@ -104,7 +113,8 @@ def txt(x, y, s, size=13, fill=None, weight="normal", anchor="start"):
 
 # ── 1. 계층 사다리 ──────────────────────────────
 def ladder(items, title, sub=None, w=1000):
-    """items: [{date, kind, holder, amount, fate}]  fate = 강조 / 보통 / 기준"""
+    """items: [{date, kind, holder, amount, fate}]  fate = 강조 / 보통 / 기준
+    (권리 사다리로 쓸 때는 인수 = 강조, 소멸 = 보통과 같은 색으로 받는다)"""
     ROW, TOP = 46, 92
     h = TOP + ROW * len(items) + 40
     o = [head(w, h), txt(28, 44, title, 20, C["ink"], "bold"),
@@ -112,7 +122,8 @@ def ladder(items, title, sub=None, w=1000):
     for i, it in enumerate(items):
         y = TOP + i * ROW
         fate = it["fate"]
-        col = {"인수": C["high"], "소멸": C["gray"], "기준": C["blue"]}[fate]
+        col = {"강조": C["high"], "보통": C["gray"], "기준": C["blue"],
+               "인수": C["high"], "소멸": C["gray"]}[fate]
         o.append(f'<rect x="28" y="{y}" width="{w-56}" height="{ROW-8}" rx="5" '
                  f'fill="{C["card"]}" stroke="{C["line"]}"/>')
         o.append(f'<rect x="28" y="{y}" width="5" height="{ROW-8}" rx="2.5" fill="{col}"/>')
@@ -216,7 +227,7 @@ open("ladder.svg", "w", encoding="utf-8").write(ladder([
 
 ```python
 import cairosvg
-cairosvg.svg2png(url="권리순위.svg", write_to="권리순위.png", scale=1.5)
+cairosvg.svg2png(url="ladder.svg", write_to="ladder.png", scale=1.5)
 ```
 
 렌더한 PNG를 **`Read` 도구로 열어 직접 확인한다.** 아래를 본다.
@@ -254,7 +265,7 @@ assert 잔여 == 그림에_찍힌_값, "검산 실패"
 | **PNG 삽입** (`ppt_add_picture`) | **기본.** scale=2 로 렌더. 폰트·레이아웃이 어긋날 여지가 없다 |
 | SVG 삽입 (`ppt_add_svg_icon`) | 나중에 PowerPoint에서 크기를 크게 바꿀 때만 |
 
-**PNG를 물건 폴더에 남기지 않는다.** `auction-property-card` 규칙과 같다 — `/tmp` 에서 만들어 PPTX에 넣고 버린다.
+**PNG를 작업 폴더에 남기지 않는다.** `/tmp` 같은 임시 폴더에서 만들어 PPTX에 넣고 버린다.
 **SVG 원본은 남긴다.** 수정할 때 다시 만들지 않아도 된다.
 
 ---
@@ -284,6 +295,7 @@ assert 잔여 == 그림에_찍힌_값, "검산 실패"
 
 | 날짜 | 내용 |
 |---|---|
+| 수강생판 2026-10-16 | 강사판 변경 반영: 「Windows 환경」 절(첫 폰트 Malgun Gothic · malgun.ttf 가드 · Edge 헤드리스 렌더, 강사판 2026-10-05 · [미검증]). 사다리 생성기 색 표가 `인수/소멸/기준` 만 받아 문서의 `강조/보통/기준`(STEP 3 예시 `fate="보통"`)이 KeyError 나던 것을 두 이름 모두 받게 고침. STEP 4·6 의 경매 전용 표현(권리순위.svg · 물건 폴더 · `auction-property-card`)을 일반 표현으로. 강사판의 당해세·최우선 주황 배지(2026-09-28)·배당 순서 정정(2026-10-05)은 경매·NPL 배당 전용이라 이 일반판에는 넣지 않음 — 경매 트랙 `npl-svg-chart` 참조 |
 | 2026-08-27 | **폰트 결함 수정 + 가드 신설.** 첫 실전 테스트에서 한글이 전부 □ 로 렌더됐다. 원인은 `font-family` 첫 항목 `Pretendard` 가 샌드박스에 없어 cairosvg 가 폴백하지 않은 것. `Noto Sans CJK KR` 을 앞으로 옮기고 `fc-list` 기반 가드를 넣었다(변이 검증 통과). 아울러 「잔여 ≠ 기대치」·「미확인 값 라벨」 규칙을 추가 |
 | 2026-08-27 | 신설. 3종 도표를 실제로 만들어 PNG 렌더까지 확인했다. 첫 판에서 발견한 결함 2개(총액 금액 겹침·0 항목 행)를 생성기에 반영했다. 폭포 차트 합계 검산 통과 |
 
