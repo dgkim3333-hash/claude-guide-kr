@@ -1,6 +1,6 @@
 ---
 name: "number-format-guard"
-description: "산출물(Excel·Word·PPT·리포트·채팅 답변)에 숫자를 쓰는 모든 작업에 항상 적용. 금액을 통화 최소 단위 풀 콤마로 강제, 만/억/조 축약 금지, 식별번호 콤마 금지를 검사하고, 특히 Excel 피벗 값 필드처럼 서식 인자가 조용히 무시되는 함정을 읽기 재검증으로 잡아낸다. 파일을 저장하기 전, \"완료\"라고 보고하기 전에 반드시 실행. 피벗테이블·차트·집계표·KPI 밴드·구간 라벨(금액대 bin)을 만들거나 \"콤마가 없다\", \"억으로 쓰지 마라\", \"서식이 안 먹었다\"는 지적을 받으면 반드시 사용."
+description: "산출물(Excel·Word·PPT·리포트·채팅 답변)에 숫자를 쓰는 모든 작업에 항상 적용. 금액을 통화 최소 단위 풀 콤마로 강제, 만/억/조 축약 금지, 식별번호 콤마 금지, 제목·KPI·헤더에 단독으로 나온 비율(달성률·LTV·하한율 등)에 환산 금액 괄호 병기, PPTX·Word·리포트·Excel 표는 열 단위 정렬(숫자가 하나라도 있는 열은 글자 칸까지 오른쪽, 한 열 안 혼용 금지)을 검사하고, 특히 Excel 피벗 값 필드처럼 서식 인자가 조용히 무시되는 함정을 읽기 재검증으로 잡아낸다. 파일을 저장하기 전, \"완료\"라고 보고하기 전에 반드시 실행. 피벗테이블·차트·집계표·KPI 밴드·구간 라벨(금액대 bin)·슬라이드나 문서의 표를 만들거나 \"콤마가 없다\", \"억으로 쓰지 마라\", \"비율 옆에 금액\", \"서식이 안 먹었다\", \"표 정렬\", \"정렬이 섞였다\"는 지적을 받으면 반드시 사용."
 ---
 
 # 숫자 표기 검증 가드 (number-format-guard)
@@ -34,6 +34,14 @@ description: "산출물(Excel·Word·PPT·리포트·채팅 답변)에 숫자를
 2. **그래프 축 라벨만**의 가독성 — 본문 데이터·셀 값·구간 라벨은 예외 아님
 3. 외부 출처 원문 인용 (출처 병기)
 
+### 비율 옆에는 금액을 붙인다 (2026-09-29 강사판 신설)
+달성률·점유율·LTV·하한율처럼 **분모가 있는 비율이 제목·KPI·표 헤더에 단독으로 나오면 위반**이다. 비율 뒤에 괄호로 환산 금액을 붙인다.
+
+- 금지: `목표 대비 71% 기준`, `회수 하한 67.26%`
+- 사용: `목표 대비 71% (2,398,737,840원) 기준`, `회수 하한 67.26% (2,272,381,790원)`
+
+분모가 슬라이드마다 다를 수 있으므로 금액은 손으로 쓰지 않고 계산 스크립트(예: `calc.json`)의 값을 포맷 함수로 넣는다. 표 본문처럼 비율과 금액이 이미 같은 행에 있으면 중복 표기하지 않는다. (강사 실측 사례 — 3열 비교 슬라이드 제목에서 지적됨)
+
 ### 구간 라벨(bin)은 본문 데이터다
 `감정가 규모대`, `채권액 구간` 같은 분류 열의 값은 셀에 저장되는 본문 데이터이므로 풀 콤마를 쓴다.
 
@@ -42,6 +50,57 @@ description: "산출물(Excel·Word·PPT·리포트·채팅 답변)에 숫자를
 
 라벨이 길어져 차트 가독성이 떨어지면 **차트 종류를 가로 막대(BarStacked)로 바꿔** 해결한다. 라벨을 줄이지 않는다.
 정렬이 깨질 수 있으므로 라벨 앞에 `①②③…` 순번을 붙이고, 라벨을 바꾼 뒤에는 피벗 행 필드를 `sort-field(Ascending)`으로 재정렬한다.
+
+### 표는 열 단위로 정렬한다 (2026-10-07 강사판 신설 — Excel 표 포함)
+PPTX·Word·리포트(HTML·PDF)에 넣는 **모든 표**와 **직접 생성하는 Excel 표**(생성 스크립트로 만드는 분석 시트·집계표)에 적용한다.
+
+- 첫 열(항목명)과 머리글 행은 왼쪽.
+- 그 밖의 열은 본문 칸 가운데 **하나라도 숫자(금액·비율·수량)면 그 열의 본문 전체를 오른쪽 끝에 맞춘다 — 글자 칸도 포함**한다. 예: 같은 열에 `123,456,000원`과 `해당 없음`이 있으면 둘 다 오른쪽.
+- 글자만 있는 열(사실·근거·확인 방법 같은 설명 열)은 왼쪽.
+- **한 열 안에서 왼쪽·오른쪽이 섞이면 위반**이다. 칸마다 「숫자면 오른쪽, 글자면 왼쪽」으로 정하지 않는다 — 그렇게 하면 `+12,340,000원`·`차액 +5,600,000원`·`-` 같은 칸만 왼쪽에 붙어 열이 들쭉날쭉해진다(강사 실측 사례 2026-10-07).
+- 숫자 판정에는 부호(`+` `-` `−`)와 단위(`brand.config.md` 의 `Currency` 단위·%·%p·m²(㎡)·명·호·건·점·일·m·km·배·개·회·분·년·가구·개월)를 포함한다. 통화를 바꿨으면 아래 정규식의 `원`도 그 단위로 바꾼다.
+
+생성기에서는 칸이 아니라 **열을 먼저 판정**한다. pptxgenjs 표 헬퍼 예:
+
+```js
+const num = /^[+\-−]?[\d,.]+\s?(원|%|%p|m²|㎡|명|호|건|점|일|m|km|배|개|회|분|년|가구|개월)?$/;
+// 열 단위 판정: 첫 열 제외, 본문 칸 중 하나라도 숫자면 그 열 전체 오른쪽. 예외는 o.align = { 열번호: "left" | "right" }
+const rightCol = rows[0].map((_, ci) => (o.align && o.align[ci]) ? o.align[ci] === "right"
+  : (ci > 0 && rows.slice(1).some(r => num.test(String(r[ci]).trim()))));
+// 각 칸: if (ri > 0 && rightCol[ci]) op.align = "right";   (머리글 행 ri === 0 은 왼쪽)
+```
+
+강사 기준 생성기 — 미제공. 생성기를 새로 짜거나 예전에 만든 생성 스크립트를 이어받을 때는 표 헬퍼에 `rightCol` 같은 열 단위 판정이 있는지 먼저 확인하고 없으면 위 판정을 넣는다. python-pptx(`examples/build_sample_deck.py` 등)·docx 표도 같은 순서(열 판정 → 칸 정렬)로 만든다.
+
+**Excel 표** — 숫자 칸은 Excel이 알아서 오른쪽에 붙이지만, 같은 열의 글자 칸(`해당 없음`·`-`·`미산출` 등)은 왼쪽에 붙어 열이 섞인다. 생성기(openpyxl)에서 `wb.save()` 직전에 표 단위 후처리를 한 번 돌린다. 표 = 머리글 행(채움색으로 식별)부터 다음 머리글 행 앞까지. 테두리 없는 칸(표 밖 주석·제목)은 건드리지 않는다.
+
+```python
+import re
+from openpyxl.styles import Alignment
+HEAD_FILL = "1456F0"   # 머리글 채움색 — brand.config.md 에서 표 머리글에 쓰는 색으로 바꾼다
+NUM = re.compile(r'^[+\-−]?[\d,.]+\s?(원|%|%p|m²|㎡|명|호|건|점|일|m|km|배|개|회|분|년|가구|개월)?$')
+def is_head(c): return str(c.fill.fgColor.rgb or "").upper().endswith(HEAD_FILL)
+def is_num(c):
+    v = c.value
+    if v is None or isinstance(v, bool): return False
+    if isinstance(v, (int, float)): return True
+    s = str(v).strip()
+    if s.startswith("="): return c.number_format not in ("General", "@")      # 숫자 서식이 걸린 수식
+    return bool(NUM.match(s))
+def align_columns(wb):
+    for ws in wb.worksheets:
+        heads = [r for r in range(1, ws.max_row + 1) if is_head(ws.cell(r, 1))]
+        for i, hr in enumerate(heads):
+            end = heads[i + 1] - 1 if i + 1 < len(heads) else ws.max_row
+            for ci in range(1, ws.max_column + 1):
+                if is_head(ws.cell(hr, ci)): ws.cell(hr, ci).alignment = Alignment(horizontal="left", vertical="center")
+                body = [ws.cell(r, ci) for r in range(hr + 1, end + 1)]
+                body = [c for c in body if c.value is not None and c.border.left.style]   # 표 안 칸만
+                right = ci > 1 and any(is_num(c) for c in body)
+                for c in body: c.alignment = Alignment(horizontal="right" if right else "left", vertical="center", wrap_text=c.alignment.wrap_text)
+```
+
+Excel 예외 두 가지: ① **남이 준 양식을 복사해 값만 채우는 파일**은 양식의 정렬을 그대로 둔다. ② 피벗·슬라이서처럼 Excel이 새로고침 때 서식을 다시 쓰는 영역은 대상이 아니다. 정렬은 서식만 바꾸므로 수식·값은 그대로여야 한다 — 후처리 뒤 재계산 대조(수식 오류 0건, 핵심 값 일치)를 다시 한다.
 
 ---
 
@@ -106,6 +165,10 @@ screenshot(action: "capture", sheet_name: "<시트>", range_address: "<값 영�
 ### 3-4. 총합계 대조
 피벗 총합계 = 원자료 행 수인지 확인한다. 불일치하면 보고한다.
 
+### 3-5. 표 정렬 확인 (PPTX·Word·리포트·Excel)
+슬라이드·문서를 렌더해 표마다 본다. **한 열 안에서 왼쪽·오른쪽이 섞인 칸이 있으면 실패**다 — 생성기의 표 헬퍼가 칸 단위 판정(옛 방식)이다. PPTX를 손으로 고치지 않고 헬퍼를 열 단위 판정으로 바꿔 다시 만든다. 부호가 붙은 금액(`+…원`)과 `-`만 있는 칸이 같은 열의 다른 숫자와 같은 쪽에 붙었는지 특히 본다.
+Excel은 저장한 파일을 openpyxl로 다시 열어 표마다 열별 `alignment.horizontal` 값이 한 가지인지 **읽어서** 센다(혼용 열 0개여야 통과). 화면 캡처가 되면 눈으로도 본다. 캡처가 실패하면 「화면은 못 봤다」고 쓴다.
+
 ---
 
 ## 4. 보고 원칙
@@ -125,7 +188,14 @@ screenshot(action: "capture", sheet_name: "<시트>", range_address: "<값 영�
 - [ ] 피벗 값 필드마다 `set-field-format`을 별도로 걸었는가
 - [ ] 스크린샷에서 콤마가 눈에 보이는가
 - [ ] 억/만/조 문자열을 검색했는가 (셀·헤더·차트 제목·구간 라벨 전부)
+- [ ] 제목·KPI·헤더의 비율에 환산 금액이 붙어 있는가
+- [ ] 슬라이드·문서·엑셀 표가 열 단위로 정렬됐는가 (숫자가 있는 열은 글자 칸까지 오른쪽, 한 열 안에서 혼용 없음, 남의 양식 복사본은 제외)
 - [ ] 식별번호 열에 콤마가 없는가
 - [ ] 피벗 `sourceData`가 외부 파일 경로가 아닌가
 - [ ] 피벗 총합계가 원자료 건수와 일치하는가
 
+---
+
+## 변경 이력
+
+- **수강생판 2026-10-16** — 강사판 변경 반영: 「비율 옆에는 금액을 붙인다」(2026-09-29) · 「표는 열 단위로 정렬한다」(2026-10-07, pptxgenjs `rightCol` 판정 · Excel openpyxl 후처리) · 3-5 표 정렬 확인 · 체크리스트 2줄. 통화는 계속 `brand.config.md` 의 `Currency` 를 따른다. 강사 기준 생성기 — 미제공.
