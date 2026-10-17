@@ -86,7 +86,6 @@ https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn
 | 1 | 크롬 주소창에 아래 주소를 붙여넣습니다 | `자동 다운로드` 설정 화면이 열립니다 |
 | 2 | 아래쪽 `여러 파일 자동 다운로드가 허용됨` 옆 `추가` | 사이트 입력 칸이 뜹니다 |
 | 3 | 내가 쓰는 경매 사이트 주소를 넣고 `추가` (예: `https://www.ggi.co.kr`) | 「허용됨」 목록에 사이트가 보입니다 |
-| 4 | **법원경매정보도 넣습니다** — `https://www.courtauction.go.kr` ([섹션 09](09_실전_경매물건분석.md)에서 씁니다) | 「허용됨」 목록에 두 사이트 |
 
 ```
 chrome://settings/content/automaticDownloads
