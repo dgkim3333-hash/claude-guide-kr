@@ -126,16 +126,24 @@ Claude 를 완전히 껐다 켜시면 됩니다. **이 문서와 배포 config �
 **키 없이 바로 되는 7개 + 키가 필요한 `firecrawl` 1개**입니다. 키가 없으면 firecrawl 하나만 붉게 뜹니다 — **고장이 아닙니다.**
 
 <details>
-<summary><b>8개 구분표 · 준비물</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
+<summary><b>8개가 각각 무엇을 하나 · 준비물</b> $\color{#0969da}{\textsf{(눌러서 보기)}}$</summary>
 
 > 📄 교재 PDF **p.24 · p.29** — Node.js 와 uv · 설치 자료는 GitHub 에
 
-| 구분 | 서버 | 준비물 |
+| 이름 | 무엇을 해주나 | 준비물 |
 |---|---|---|
-| **바로 되는 것 (7개)** | memory · youtube-transcript · context7 · sequential-thinking · playwright · hwp-read · word | **없음.** 붙여넣고 재시작하면 끝 |
-| **API 키 예제 (1개)** | **firecrawl** | firecrawl.dev 무료 가입 후 키 하나. **폴더 불필요** |
+| `memory` | 대화가 바뀌어도 기억합니다 | 없음 |
+| `youtube-transcript` | 유튜브 자막을 가져옵니다 | 없음 |
+| `context7` | 프로그램 공식 문서를 최신으로 봅니다 | 없음 |
+| `sequential-thinking` | 어려운 문제를 단계로 쪼개 해결합니다 | 없음 |
+| `playwright` | 브라우저를 대신 눌러 줍니다 | 없음 |
+| `hwp-read` | 한글 문서를 읽습니다 | 없음 |
+| `word` | 워드 문서를 읽고 씁니다 | 없음 |
+| **`firecrawl`** | 웹페이지를 글자로 뽑아 줍니다 | **★ API 키 1개** — firecrawl.dev 무료 가입. 폴더 불필요 |
 
-키 넣는 법은 아래 「Firecrawl」 절에 있습니다.
+**위 일곱 개는 붙여넣고 재시작하면 끝입니다.** 키 넣는 법은 아래 「Firecrawl」 절에 있습니다.
+
+하나씩 더 자세한 설명(예시 질문 · 왜 이 여덟 개를 골랐나)은 → [기본 config 에 들어 있는 MCP 여덟 개](#mcp8) 절에 있습니다.
 
 </details>
 
@@ -907,6 +915,8 @@ winget install yt-dlp
 </details>
 
 ---
+
+<a id="mcp8"></a>
 
 ## $\color{#d97757}{\textsf{기본 config 에 들어 있는 MCP 여덟 개 — 무엇이고, 왜 이것을 골랐나}}$
 
