@@ -42,20 +42,6 @@
         "hwp-mcp@latest"
       ]
     },
-    "word": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "word-mcp-live",
-        "word_mcp_server.exe"
-      ],
-      "env": {
-        "MCP_AUTHOR": "Claude",
-        "MCP_AUTHOR_INITIALS": "C",
-        "PYTHONIOENCODING": "utf-8",
-        "PYTHONUTF8": "1"
-      }
-    },
     "firecrawl": {
       "command": "npx",
       "args": [
